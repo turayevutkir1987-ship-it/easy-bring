@@ -1,283 +1,314 @@
 <!DOCTYPE html>
 <html lang="uz">
 <head>
-    <meta charset="UTF-8">
-    <title>Mini Uzum Market</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mini Uzum Market</title>
 
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background: #f5f5f5;
-            margin: 0;
-        }
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
-        .header {
-            background: #7000ff;
-            padding: 15px;
-            display: flex;
-            justify-content: center;
-            gap:10px;
-            align-items:center;
-        }
-
-        .search {
-            width: 80%;
-            max-width: 500px;
-            padding: 10px;
-            border-radius: 8px;
-            border: none;
-            font-size: 16px;
-            outline: none;
-        }
-
-        .products {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-            gap: 15px;
-            padding: 20px;
-        }
-
-        button {
-            border: none;
-            background: none;
-            padding: 0;
-            cursor: pointer;
-        }
-
-        .card {
-            background: white;
-            border-radius: 10px;
-            padding: 10px;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-        }
-
-        .image {
-            height: 120px;
-            border-radius: 8px;
-            overflow: hidden;
-            margin-bottom: 10px;
-        }
-
-        .image img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        .title {
-            font-size: 14px;
-            margin-bottom: 5px;
-        }
-
-        .price {
-            color: #7000ff;
-            font-weight: bold;
-        }
-
-        .hidden {
-            display: none;
-        }
-    </style>
+<style>
+body{
+margin:0;
+font-family:Arial;
+background:#f4f4f4;
+}
+.header{
+background:#7000ff;
+color:white;
+padding:12px;
+display:flex;
+gap:10px;
+align-items:center;
+}
+.search{
+flex:1;
+padding:8px;
+border:none;
+border-radius:8px;
+}
+.cart-wrap{position:relative;cursor:pointer;}
+.cart-count{
+position:absolute;
+top:-5px;
+right:-8px;
+background:red;
+color:white;
+border-radius:50%;
+padding:2px 6px;
+font-size:12px;
+}
+.products{
+display:grid;
+grid-template-columns:repeat(auto-fill,minmax(150px,1fr));
+gap:12px;
+padding:12px;
+}
+.product{
+background:white;
+border-radius:12px;
+overflow:hidden;
+box-shadow:0 2px 5px rgba(0,0,0,.2);
+}
+.product img{
+width:100%;
+height:140px;
+object-fit:cover;
+}
+.info{padding:10px;}
+.title{font-size:14px;}
+.price{color:#7000ff;font-weight:bold;}
+.add-btn{
+width:100%;
+background:#7000ff;
+color:white;
+border:none;
+padding:8px;
+border-radius:8px;
+margin-top:5px;
+}
+.modal, .cart-page{
+position:fixed;
+top:0;left:0;
+width:100%;height:100%;
+background:rgba(0,0,0,.5);
+display:none;
+justify-content:center;
+align-items:center;
+}
+.modal-box, .cart-box{
+background:white;
+width:90%;
+max-width:350px;
+padding:15px;
+border-radius:12px;
+text-align:center;
+}
+.qty{
+display:flex;
+justify-content:center;
+gap:10px;
+margin:10px 0;
+}
+.qty button{
+width:35px;height:35px;
+border-radius:50%;
+background:#7000ff;
+color:white;border:none;font-size:20px;
+}
+.cart-box{height:100%;overflow:auto;}
+.cart-item{
+display:flex;
+justify-content:space-between;
+margin:6px 0;
+}
+input{
+width:100%;
+padding:8px;
+margin:4px 0;
+border-radius:6px;
+border:1px solid #ccc;
+}
+.bottom{
+position:fixed;
+bottom:0;left:0;
+width:100%;
+background:white;
+display:flex;
+justify-content:space-around;
+padding:10px;
+box-shadow:0 -2px 5px rgba(0,0,0,.2);
+}
+.bottom i{font-size:22px;color:#7000ff;}
+</style>
 </head>
+
 <body>
 
-    <div style="margin-left: 90%">
-        <button>
-            <i class="fa-solid fa-heart fa-2x"></i> <i style="margin-left: 90px;" class="fa-solid fa-user fa-2x"></i>
-        </button>
-
-    </div>
-    <div style=" height: 20px;"></div>
-
 <div class="header">
-    <i class="fa-solid fa-magnifying-glass" style="color:white;"></i>
-    <input class="search" type="text" placeholder="Mahsulot qidirish..." onkeyup="searchProduct()">
+<input class="search" placeholder="Qidirish..." onkeyup="searchProduct()">
+<div class="cart-wrap" onclick="openCart()">
+<i class="fa-solid fa-cart-shopping"></i>
+<span id="cartCount" class="cart-count">0</span>
+</div>
 </div>
 
+<div class="products">
 
-<div class="Mahsulot" id="productList">
+<div class="product">
+<img src="assets/olma.jpg">
+<div class="info">
+<div class="title">Olma</div>
+<div class="price">120000</div>
+<button class="add-btn" onclick="openModal(this)">Savatchaga</button>
+</div>
+</div>
 
-    <button class="product">
-        <div class="card">
-            <div class="image">
-                <img src="assets/olma.jpg">
-            </div>
-            <div class="title">Olma</div>
-            <div class="price">120 000 so'm</div>
-            <i style="margin-left: 80%;" class="fa-sharp fa-solid fa-bag-shopping"></i>
-        </div>
-    </button>
-
-
-    <button class="product">
-        <div class="card">
-            <div class="image">
-                <img src="assets/banan.jpg">
-            </div>
-            <div class="title">Banan</div>
-            <div class="price">120 000 so'm</div>
-            <i style="margin-left: 80%;" class="fa-sharp fa-solid fa-bag-shopping"></i>
-        </div>
-    </button>
-
-
-    <button class="product">
-        <div class="card">
-            <div class="image">
-                <img src="assets/apelsin.jpg">
-            </div>
-            <div class="title">Apelsin</div>
-            <div class="price">120 000 so'm</div>
-            <i style="margin-left: 80%;" class="fa-sharp fa-solid fa-bag-shopping"></i>
-        </div>
-    </button>
-
-
-    <button class="product">
-        <div class="card">
-            <div class="image">
-                <img src="assets/shaftoli 2.jpg">
-            </div>
-            <div class="title">shaftoli</div>
-            <div class="price">120 000 so'm</div>
-            <i style="margin-left: 80%;" class="fa-sharp fa-solid fa-bag-shopping"></i>
-        </div>
-    </button>
-<button class="product">
-        <div class="card">
-            <div class="image">
-                <img src="assets/uzum.jpg">
-            </div>
-            <div class="title">uzum</div>
-            <div class="price">120 000 so'm</div>
-            <i style="margin-left: 80%;" class="fa-sharp fa-solid fa-bag-shopping"></i>
-        </div>
-    </button>
-
-
-    <button class="product">
-        <div class="card">
-            <div class="image">
-                <img src="assets/anor.jpg">
-            </div>
-            <div class="title">anor</div>
-            <div class="price">120 000 so'm</div>
-            <i style="margin-left: 80%;" class="fa-sharp fa-solid fa-bag-shopping"></i>
-        </div>
-    </button>
-
-
-    <button class="product">
-        <div class="card">
-            <div class="image">
-                <img src="assets/nok.jpg">
-            </div>
-            <div class="title">nok</div>
-            <div class="price">120 000 so'm</div>
-            <i style="margin-left: 80%;" class="fa-sharp fa-solid fa-bag-shopping"></i>
-        </div>
-    </button>
-
-
-    <button class="product">
-        <div class="card">
-            <div class="image">
-                <img src="assets/redmi.jpg">
-            </div>
-            <div class="title">redmi</div>
-            <div class="price">2 500 000 so'm</div>
-            <i style="margin-left: 80%;" class="fa-sharp fa-solid fa-bag-shopping"></i>
-        </div>
-    </button>
-
-
-    <button class="product">
-        <div class="card">
-            <div class="image">
-                <img src="assets/iphone.jpg">
-            </div>
-            <div class="title">iphone</div>
-            <div class="price">14 000 000 so'm</div>
-            <i style="margin-left: 80%;" class="fa-sharp fa-solid fa-bag-shopping"></i>
-        </div>
-    </button>
-
-
-    <button class="product">
-        <div class="card">
-            <div class="image">
-                <img src="assets/samsung.jpg">
-            </div>
-            <div class="title">samsung</div>
-            <div class="price">14 300 000 so'm</div>
-            <i style="margin-left: 80%;" class="fa-sharp fa-solid fa-bag-shopping"></i>
-        </div>
-    </button>
-
-
-    <button class="product">
-        <div class="card">
-            <div class="image">
-                <img src="assets/klavitura.jpg">
-            </div>
-            <div class="title">klavitura</div>
-            <div class="price">163 400 so'm</div>
-            <i style="margin-left: 80%;" class="fa-sharp fa-solid fa-bag-shopping"></i>
-        </div>
-    </button>
-
-
-    <button class="product">
-        <div class="card">
-            <div class="image">
-                <img src="assets/monitor.jpg">
-            </div>
-            <div class="title">monitor</div>
-            <div class="price">322 000 so'm</div>
-            <i style="margin-left: 80%;" class="fa-sharp fa-solid fa-bag-shopping"></i>
-        </div>
-    </button>
-
-
-    <button class="product">
-        <div class="card">
-            <div class="image">
-                <img src="assets/protsessor.jpg">
-            </div>
-            <div class="title">protsessor</div>
-            <div class="price">1 200 000 so'm</div>
-            <i style="margin-left: 80%;" class="fa-sharp fa-solid fa-bag-shopping"></i>
-        </div>
-    </button>
-
-
-    <button class="product">
-        <div class="card">
-            <div class="image">
-                <img src="assets/kalonka.jpg">
-            </div>
-            <div class="title">kalonka</div>
-            <div class="price">413 000 so'm</div>
-            <i style="margin-left: 80%;" class="fa-sharp fa-solid fa-bag-shopping"></i>
-        </div>
-    </button>
+<div class="product">
+<img src="assets/iphone.jpg">
+<div class="info">
+<div class="title">iPhone</div>
+<div class="price">14000000</div>
+<button class="add-btn" onclick="openModal(this)">Savatchaga</button>
+</div>
+</div>
 
 </div>
+
+<div class="modal" id="modal">
+<div class="modal-box">
+<h3 id="mName"></h3>
+<p id="mPrice"></p>
+<div class="qty">
+<button onclick="changeQty(-1)">-</button>
+<span id="mQty">1</span>
+<button onclick="changeQty(1)">+</button>
+</div>
+<button class="add-btn" onclick="addToCart()">Qo‘shish</button>
+<button onclick="closeModal()">Yopish</button>
+</div>
+</div>
+
+<div class="cart-page" id="cartPage">
+<div class="cart-box">
+<h3>Savatcha</h3>
+<div id="cartItems"></div>
+<p id="total"></p>
+
+<input id="name" placeholder="Ismingiz">
+<input id="phone" placeholder="Telefon">
+<input id="address" placeholder="Manzil">
+
+<button class="add-btn" onclick="sendOrder()">Buyurtma berish</button>
+<button onclick="closeCart()">Orqaga</button>
+</div>
+</div>
+
+<div class="bottom">
+<i class="fa-solid fa-house"></i>
+<i class="fa-solid fa-cart-shopping" onclick="openCart()"></i>
+<i class="fa-solid fa-user"></i>
+</div>
+
 <script>
-function searchProduct() {
-    let input = document.querySelector(".search").value.toLowerCase();
-    let products = document.querySelectorAll(".product");
+let cart=[];
+let current={};
 
-    products.forEach(product => {
-        let title = product.querySelector(".title").innerText.toLowerCase();
-if (title.includes(input)) {
-            product.classList.remove("hidden");
-        } else {
-            product.classList.add("hidden");
-        }
-    });
+let BOT_TOKEN="8300287526:8300287526:8300287526:AAG2vYOx6GJdLeEsw0FyoXkxZCruPMZfqL4";
+let CHAT_ID="779623589";
+function openModal(btn){
+let p=btn.closest(".product");
+current={
+name:p.querySelector(".title").innerText,
+price:+p.querySelector(".price").innerText,
+qty:1
+};
+mName.innerText=current.name;
+mPrice.innerText=current.price+" so'm";
+mQty.innerText=1;
+modal.style.display="flex";
 }
+
+function changeQty(v){
+current.qty+=v;
+if(current.qty<1) current.qty=1;
+mQty.innerText=current.qty;
+}
+
+function addToCart(){
+let item=cart.find(i=>i.name==current.name);
+item? item.qty+=current.qty : cart.push({...current});
+updateCount();
+closeModal();
+}
+
+function updateCount(){
+cartCount.innerText=cart.reduce((s,i)=>s+i.qty,0);
+}
+
+function openCart(){
+cartItems.innerHTML="";
+let sum=0;
+cart.forEach(i=>{
+cartItems.innerHTML+=`
+<div class="cart-item">
+${i.name} x ${i.qty}
+<span>${i.price*i.qty} so'm</span>
+</div>`;
+sum+=i.price*i.qty;
+});
+total.innerText="Jami: "+sum+" so'm";
+cartPage.style.display="flex";
+}
+
+function closeCart(){cartPage.style.display="none";}
+function closeModal(){modal.style.display="none";}
+
+function searchProduct(){
+let v=document.querySelector(".search").value.toLowerCase();
+document.querySelectorAll(".product").forEach(p=>{
+p.style.display=p.querySelector(".title").innerText.toLowerCase().includes(v)?"block":"none";
+});
+
+}
+
+async function sendOrder(){
+
+let name = document.getElementById("name").value;
+let phone = document.getElementById("phone").value;
+let address = document.getElementById("address").value;
+
+if(!name  !phone  !address){
+alert("Ma'lumotlarni to'liq kiriting!");
+return;
+}
+
+if(cart.length==0){
+alert("Savatcha bo'sh!");
+return;
+}
+
+let msg = `🛒 BUYURTMA
+👤 ${name}
+📞 ${phone}
+📍 ${address}\n`;
+
+let total=0;
+cart.forEach(i=>{
+msg+=📦 ${i.name} x ${i.qty} = ${i.price*i.qty} so'm\n;
+total+=i.price*i.qty;
+});
+
+msg+=💰 Jami: ${total} so'm;
+
+try{
+
+let res = await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`,{
+method:"POST",
+headers:{"Content-Type":"application/json"},
+body:JSON.stringify({
+chat_id:CHAT_ID,
+text:msg
+})
+});
+
+let data = await res.json();
+
+if(data.ok){
+alert("✅ Buyurtma muvaffaqiyatli yuborildi!");
+cart=[];
+updateCount();
+closeCart();
+}else{
+alert("❌ Botga yuborilmadi! Token yoki Chat ID xato.");
+}
+
+}catch(err){
+alert("❌ Internet yoki serverda muammo!");
+}
+
+}
+
 </script>
 
 </body>
