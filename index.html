@@ -3,312 +3,388 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Mini Uzum Market</title>
-
+<title>Mini Market</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-
 <style>
 body{
-margin:0;
-font-family:Arial;
-background:#f4f4f4;
+  margin:0;
+  font-family:Arial;
+  background:#f4f4f4;
 }
-.header{
-background:#7000ff;
-color:white;
-padding:12px;
-display:flex;
-gap:10px;
-align-items:center;
+
+.top{
+  background:#7000ff;
+  color:white;
+  padding:10px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
 }
-.search{
-flex:1;
-padding:8px;
-border:none;
-border-radius:8px;
+
+.back{
+  cursor:pointer;
+  display:none;
+  font-weight:bold;
 }
-.cart-wrap{position:relative;cursor:pointer;}
-.cart-count{
-position:absolute;
-top:-5px;
-right:-8px;
-background:red;
-color:white;
-border-radius:50%;
-padding:2px 6px;
-font-size:12px;
+
+.center{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  height:90vh;
+  gap:20px;
 }
+
+.btn{
+  width:200px;
+  padding:15px;
+  border:none;
+  border-radius:10px;
+  font-size:18px;
+  cursor:pointer;
+  background:#7000ff;
+  color:white;
+}
+
+.seller-form{
+  padding:15px;
+  display:none;
+}
+
+input, select{
+  width:100%;
+  padding:8px;
+  margin:5px 0;
+  border-radius:6px;
+  border:1px solid #ccc;
+}
+
 .products{
-display:grid;
-grid-template-columns:repeat(auto-fill,minmax(150px,1fr));
-gap:12px;
-padding:12px;
+  display:none;
+  padding:10px;
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(160px,1fr));
+  gap:10px;
 }
-.product{
-background:white;
-border-radius:12px;
-overflow:hidden;
-box-shadow:0 2px 5px rgba(0,0,0,.2);
+
+.card{
+  background:white;
+  border-radius:12px;
+  overflow:hidden;
+  box-shadow:0 2px 6px rgba(0,0,0,.2);
+  font-size:14px;
+  display:flex;
+  flex-direction:column;
 }
-.product img{
-width:100%;
-height:140px;
-object-fit:cover;
+
+.card img{
+  width:100%;
+  height:120px;
+  object-fit:cover;
 }
-.info{padding:10px;}
-.title{font-size:14px;}
-.price{color:#7000ff;font-weight:bold;}
-.add-btn{
-width:100%;
-background:#7000ff;
-color:white;
-border:none;
-padding:8px;
-border-radius:8px;
-margin-top:5px;
+
+.card-body{
+  padding:8px;
+  flex:1;
+  display:flex;
+  flex-direction:column;
+  justify-content:space-between;
 }
-.modal, .cart-page{
-position:fixed;
-top:0;left:0;
-width:100%;height:100%;
-background:rgba(0,0,0,.5);
-display:none;
-justify-content:center;
-align-items:center;
+
+.card-body h4{
+  margin:5px 0;
+  font-size:15px;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
 }
-.modal-box, .cart-box{
-background:white;
-width:90%;
-max-width:350px;
-padding:15px;
-border-radius:12px;
-text-align:center;
+
+.card-body p{
+  margin:3px 0;
+  font-size:13px;
+  color:#555;
 }
+
+.cart-icon{
+  cursor:pointer;
+  position:relative;
+  font-size:22px;
+}
+
+.cart-count{
+  position:absolute;
+  top:-8px;
+  right:-10px;
+  background:red;
+  color:white;
+  border-radius:50%;
+  padding:2px 6px;
+  font-size:12px;
+}
+
+.cart-page{
+  display:none;
+  position:fixed;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+  background:rgba(0,0,0,.5);
+  justify-content:center;
+  align-items:center;
+}
+
+.cart-box{
+  background:white;
+  width:90%;
+  max-width:350px;
+  padding:15px;
+  border-radius:12px;
+  max-height:80%;
+  overflow:auto;
+}
+
+.cart-item{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin:6px 0;
+}
+
 .qty{
-display:flex;
-justify-content:center;
-gap:10px;
-margin:10px 0;
+  display:flex;
+  gap:5px;
+  align-items:center;
 }
 .qty button{
-width:35px;height:35px;
-border-radius:50%;
-background:#7000ff;
-color:white;border:none;font-size:20px;
+  width:25px;
+  height:25px;
+  border:none;
+  border-radius:50%;
+  background:#7000ff;
+  color:white;
+  font-weight:bold;
+  cursor:pointer;
 }
-.cart-box{height:100%;overflow:auto;}
-.cart-item{
-display:flex;
-justify-content:space-between;
-margin:6px 0;
+
+.cancel-btn{
+  background:#ff4d4d;
 }
-input{
-width:100%;
-padding:8px;
-margin:4px 0;
-border-radius:6px;
-border:1px solid #ccc;
-}
-.bottom{
-position:fixed;
-bottom:0;left:0;
-width:100%;
-background:white;
-display:flex;
-justify-content:space-around;
-padding:10px;
-box-shadow:0 -2px 5px rgba(0,0,0,.2);
-}
-.bottom i{font-size:22px;color:#7000ff;}
 </style>
 </head>
-
 <body>
 
-<div class="header">
-<input class="search" placeholder="Qidirish..." onkeyup="searchProduct()">
-<div class="cart-wrap" onclick="openCart()">
-<i class="fa-solid fa-cart-shopping"></i>
-<span id="cartCount" class="cart-count">0</span>
-</div>
-</div>
-
-<div class="products">
-
-<div class="product">
-<img src="assets/olma.jpg">
-<div class="info">
-<div class="title">Olma</div>
-<div class="price">120000</div>
-<button class="add-btn" onclick="openModal(this)">Savatchaga</button>
-</div>
+<div class="top">
+  <span class="back" onclick="goHome()">⬅️ Orqaga</span>
+  <div class="cart-icon" onclick="openCart()">
+    <i class="fa-solid fa-cart-shopping"></i>
+    <span class="cart-count" id="cartCount">0</span>
+  </div>
 </div>
 
-<div class="product">
-<img src="assets/iphone.jpg">
-<div class="info">
-<div class="title">iPhone</div>
-<div class="price">14000000</div>
-<button class="add-btn" onclick="openModal(this)">Savatchaga</button>
-</div>
+<!-- Bosh sahifa -->
+<div class="center" id="home">
+  <button class="btn" onclick="openSeller()"><i class="fa-solid fa-dollar-sign"></i> Sotuvchi</button>
+  <button class="btn" onclick="openBuyer()">Haridor</button>
 </div>
 
+<!-- Sotuvchi form -->
+<div class="seller-form" id="seller">
+  <h3>Mahsulot qo‘shish</h3>
+  <input id="name" placeholder="Mahsulot nomi">
+  <input id="price" placeholder="Narxi">
+  <input id="count" placeholder="Nechta bor">
+  <input type="file" id="image">
+  <button class="btn" onclick="addProduct()">Qo‘shish</button>
 </div>
 
-<div class="modal" id="modal">
-<div class="modal-box">
-<h3 id="mName"></h3>
-<p id="mPrice"></p>
-<div class="qty">
-<button onclick="changeQty(-1)">-</button>
-<span id="mQty">1</span>
-<button onclick="changeQty(1)">+</button>
-</div>
-<button class="add-btn" onclick="addToCart()">Qo‘shish</button>
-<button onclick="closeModal()">Yopish</button>
-</div>
+<!-- Haridor mahsulotlari -->
+<div class="products" id="buyer">
+  <h3>Mahsulotlar</h3>
+  <div id="productList"></div>
 </div>
 
+<!-- Savatcha / Buyurtma -->
 <div class="cart-page" id="cartPage">
-<div class="cart-box">
-<h3>Savatcha</h3>
-<div id="cartItems"></div>
-<p id="total"></p>
+  <div class="cart-box">
+    <h3>Savatcha</h3>
+    <div id="cartItems"></div>
+    <p id="total"></p>
 
-<input id="name" placeholder="Ismingiz">
-<input id="phone" placeholder="Telefon">
-<input id="address" placeholder="Manzil">
+    <h4>Buyurtma berish</h4>
+    <input id="custName" placeholder="Ismingiz">
+    <input id="custPhone" placeholder="Telefon">
+    <input id="custAddress" placeholder="Manzil">
 
-<button class="add-btn" onclick="sendOrder()">Buyurtma berish</button>
-<button onclick="closeCart()">Orqaga</button>
+    <button class="btn" onclick="sendOrder()">Buyurtma berish</button>
+    <button class="btn cancel-btn" onclick="cancelOrder()">Buyurtmani bekor qilish</button>
+    <button class="btn" onclick="closeCart()" style="background:#aaa;">Orqaga</button>
+  </div>
 </div>
-</div>
-
-<div class="bottom">
-<i class="fa-solid fa-house"></i>
-<i class="fa-solid fa-cart-shopping" onclick="openCart()"></i>
-<i class="fa-solid fa-user"></i>
-</div>
-
 <script>
-let cart=[];
-let current={};
+let products = JSON.parse(localStorage.getItem("products"))  [];
+let cart = JSON.parse(localStorage.getItem("cart"))  [];
 
-let BOT_TOKEN="8300287526:8300287526:8300287526:AAG2vYOx6GJdLeEsw0FyoXkxZCruPMZfqL4";
-let CHAT_ID="779623589";
-function openModal(btn){
-let p=btn.closest(".product");
-current={
-name:p.querySelector(".title").innerText,
-price:+p.querySelector(".price").innerText,
-qty:1
-};
-mName.innerText=current.name;
-mPrice.innerText=current.price+" so'm";
-mQty.innerText=1;
-modal.style.display="flex";
+function openSeller(){
+  document.getElementById("home").style.display="none";
+  document.getElementById("seller").style.display="block";
+  document.getElementById("buyer").style.display="none";
+  document.querySelector(".back").style.display="block";
 }
 
-function changeQty(v){
-current.qty+=v;
-if(current.qty<1) current.qty=1;
-mQty.innerText=current.qty;
+function openBuyer(){
+  document.getElementById("home").style.display="none";
+  document.getElementById("seller").style.display="none";
+  document.getElementById("buyer").style.display="grid";
+  document.querySelector(".back").style.display="block";
+  renderProducts();
 }
 
-function addToCart(){
-let item=cart.find(i=>i.name==current.name);
-item? item.qty+=current.qty : cart.push({...current});
-updateCount();
-closeModal();
+function goHome(){
+  document.getElementById("home").style.display="flex";
+  document.getElementById("seller").style.display="none";
+  document.getElementById("buyer").style.display="none";
+  document.querySelector(".back").style.display="none";
 }
 
-function updateCount(){
-cartCount.innerText=cart.reduce((s,i)=>s+i.qty,0);
+function addProduct(){
+  let name=document.getElementById("name").value;
+  let price=document.getElementById("price").value;
+  let count=document.getElementById("count").value;
+  let file=document.getElementById("image").files[0];
+
+  if(!name  !price  !count  !file){
+    alert("Hammasini to'ldiring");
+    return;
+  }
+
+  let reader=new FileReader();
+  reader.onload=function(){
+    products.push({name, price, count, image:reader.result});
+    localStorage.setItem("products",JSON.stringify(products));
+    alert("Mahsulot qo‘shildi");
+    document.getElementById("name").value="";
+    document.getElementById("price").value="";
+    document.getElementById("count").value="";
+    document.getElementById("image").value="";
+    renderProducts();
+  };
+
+  reader.readAsDataURL(file);
+}
+
+function renderProducts(){
+  let div=document.getElementById("productList");
+  div.innerHTML="";
+  products.forEach((p,i)=>{
+    div.innerHTML+=`
+    <div class="card">
+      <img src="${p.image}">
+      <div class="card-body">
+        <h4>${p.name}</h4>
+        <p>💰 ${p.price} so'm</p>
+        <p>📦 ${p.count} ta</p>
+        <div class="qty">
+          <button onclick="changeQty(${i},-1)">-</button>
+          <span id="qty-${i}">1</span>
+          <button onclick="changeQty(${i},1)">+</button>
+        </div>
+        <button class="btn" onclick="addToCart(${i})">Savatchaga qo‘shish</button>
+      </div>
+    </div>
+    `;
+  });
+}
+
+function changeQty(index, val){
+  let span = document.getElementById(`qty-${index}`);
+  let qty = parseInt(span.innerText)+val;
+  if(qty<1) qty=1;
+  span.innerText = qty;
+}
+
+function addToCart(index){
+  let qty = parseInt(document.getElementById(`qty-${index}`).innerText);
+  let item = {...products[index], qty};
+  let exist = cart.find(c=>c.name===item.name);
+  if(exist) exist.qty += qty;
+  else cart.push(item);
+  localStorage.setItem("cart",JSON.stringify(cart));
+  updateCartCount();
+  alert("Mahsulot savatchaga qo‘shildi");
+}
+
+function updateCartCount(){
+  let count = cart.reduce((s,i)=>s+i.qty,0);
+  document.getElementById("cartCount").innerText = count;
 }
 
 function openCart(){
-cartItems.innerHTML="";
-let sum=0;
-cart.forEach(i=>{
-cartItems.innerHTML+=`
-<div class="cart-item">
-${i.name} x ${i.qty}
-<span>${i.price*i.qty} so'm</span>
-</div>`;
-sum+=i.price*i.qty;
-});
-total.innerText="Jami: "+sum+" so'm";
-cartPage.style.display="flex";
+  renderCart();
+  document.getElementById("cartPage").style.display="flex";
 }
 
-function closeCart(){cartPage.style.display="none";}
-function closeModal(){modal.style.display="none";}
-
-function searchProduct(){
-let v=document.querySelector(".search").value.toLowerCase();
-document.querySelectorAll(".product").forEach(p=>{
-p.style.display=p.querySelector(".title").innerText.toLowerCase().includes(v)?"block":"none";
-});
-
+function closeCart(){
+  document.getElementById("cartPage").style.display="none";
 }
 
-async function sendOrder(){
-
-let name = document.getElementById("name").value;
-let phone = document.getElementById("phone").value;
-let address = document.getElementById("address").value;
-
-if(!name  !phone  !address){
-alert("Ma'lumotlarni to'liq kiriting!");
-return;
+function renderCart(){
+  let div = document.getElementById("cartItems");
+  div.innerHTML="";
+  let total=0;
+  cart.forEach(i=>{
+    div.innerHTML+=`
+      <div class="cart-item">
+        ${i.name} x ${i.qty} = ${i.price*i.qty} so'm
+      </div>
+    `;
+    total += i.price*i.qty;
+  });
+  document.getElementById("total").innerText = "Jami: "+total+" so'm";
 }
 
-if(cart.length==0){
-alert("Savatcha bo'sh!");
-return;
+function sendOrder(){
+  let name=document.getElementById("custName").value;
+  let phone=document.getElementById("custPhone").value;
+  let address=document.getElementById("custAddress").value;
+
+  if(!name  !phone || !address){
+    alert("Iltimos, barcha maydonlarni to‘ldiring");
+    return;
+  }
+
+  if(cart.length===0){
+    alert("Savatcha bo‘sh!");
+    return;
+  }
+let msg = 🛒 BUYURTMA\n👤 ${name}\n📞 ${phone}\n📍 ${address}\n\n;
+  cart.forEach(i=>{
+    msg += ${i.name} x ${i.qty} = ${i.price*i.qty} so'm\n;
+  });
+  let total = cart.reduce((s,i)=>s+i.qty*i.price,0);
+  msg += 💰 Jami: ${total} so'm;
+
+  alert("Buyurtma tayyor:\n\n" + msg);
+
+  cart=[];
+  localStorage.setItem("cart",JSON.stringify(cart));
+  updateCartCount();
+  closeCart();
 }
 
-let msg = `🛒 BUYURTMA
-👤 ${name}
-📞 ${phone}
-📍 ${address}\n`;
-
-let total=0;
-cart.forEach(i=>{
-msg+=📦 ${i.name} x ${i.qty} = ${i.price*i.qty} so'm\n;
-total+=i.price*i.qty;
-});
-
-msg+=💰 Jami: ${total} so'm;
-
-try{
-
-let res = await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`,{
-method:"POST",
-headers:{"Content-Type":"application/json"},
-body:JSON.stringify({
-chat_id:CHAT_ID,
-text:msg
-})
-});
-
-let data = await res.json();
-
-if(data.ok){
-alert("✅ Buyurtma muvaffaqiyatli yuborildi!");
-cart=[];
-updateCount();
-closeCart();
-}else{
-alert("❌ Botga yuborilmadi! Token yoki Chat ID xato.");
+function cancelOrder(){
+  if(confirm("Savatchani bo‘shatishni istaysizmi?")){
+    cart=[];
+    localStorage.setItem("cart",JSON.stringify(cart));
+    updateCartCount();
+    renderCart();
+    alert("Savatcha bo‘shatildi");
+  }
 }
 
-}catch(err){
-alert("❌ Internet yoki serverda muammo!");
-}
-
-}
-
+updateCartCount();
+renderProducts();
 </script>
 
 </body>
