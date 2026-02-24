@@ -1,391 +1,287 @@
 <!DOCTYPE html>
 <html lang="uz">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Mini Market</title>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-<style>
-body{
-  margin:0;
-  font-family:Arial;
-  background:#f4f4f4;
-}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Easy-Bring | Enterprise Edition</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root { --primary: #7000ff; --secondary: #00d1b2; --bg: #f5f7fa; }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Poppins', sans-serif; }
+        body { background: var(--bg); height: 100vh; display: flex; overflow: hidden; }
 
-.top{
-  background:#7000ff;
-  color:white;
-  padding:10px;
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-}
+        /* Auth Screen */
+        #auth-screen { position: fixed; inset: 0; background: white; z-index: 9999; display: flex; align-items: center; justify-content: center; }
+        .auth-card { width: 380px; padding: 40px; border-radius: 30px; box-shadow: 0 10px 40px rgba(0,0,0,0.1); text-align: center; }
 
-.back{
-  cursor:pointer;
-  display:none;
-  font-weight:bold;
-}
+        /* Main UI */
+        .sidebar { width: 280px; background: #fff; border-right: 1px solid #eee; display: flex; flex-direction: column; padding: 25px; }
+        .logo { color: var(--primary); font-size: 26px; font-weight: 800; margin-bottom: 30px; text-align: center; }
+        .sidebar button { background: none; border: none; padding: 15px; text-align: left; font-size: 14px; cursor: pointer; border-radius: 12px; margin-bottom: 5px; color: #444; transition: 0.2s; position: relative; }
+        .sidebar button.active { background: var(--primary); color: white; }
+        
+        .main-content { flex: 1; display: flex; flex-direction: column; }
+        header { background: white; padding: 20px 40px; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; align-items: center; }
+        
+        .content-body { padding: 30px; overflow-y: auto; flex: 1; }
+        section { display: none; }
+        section.active { display: block; animation: fadeIn 0.3s; }
 
-.center{
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  justify-content:center;
-  height:90vh;
-  gap:20px;
-}
-
-.btn{
-  width:200px;
-  padding:15px;
-  border:none;
-  border-radius:10px;
-  font-size:18px;
-  cursor:pointer;
-  background:#7000ff;
-  color:white;
-}
-
-.seller-form{
-  padding:15px;
-  display:none;
-}
-
-input, select{
-  width:100%;
-  padding:8px;
-  margin:5px 0;
-  border-radius:6px;
-  border:1px solid #ccc;
-}
-
-.products{
-  display:none;
-  padding:10px;
-  display:grid;
-  grid-template-columns:repeat(auto-fill,minmax(160px,1fr));
-  gap:10px;
-}
-
-.card{
-  background:white;
-  border-radius:12px;
-  overflow:hidden;
-  box-shadow:0 2px 6px rgba(0,0,0,.2);
-  font-size:14px;
-  display:flex;
-  flex-direction:column;
-}
-
-.card img{
-  width:100%;
-  height:120px;
-  object-fit:cover;
-}
-
-.card-body{
-  padding:8px;
-  flex:1;
-  display:flex;
-  flex-direction:column;
-  justify-content:space-between;
-}
-
-.card-body h4{
-  margin:5px 0;
-  font-size:15px;
-  white-space:nowrap;
-  overflow:hidden;
-  text-overflow:ellipsis;
-}
-
-.card-body p{
-  margin:3px 0;
-  font-size:13px;
-  color:#555;
-}
-
-.cart-icon{
-  cursor:pointer;
-  position:relative;
-  font-size:22px;
-}
-
-.cart-count{
-  position:absolute;
-  top:-8px;
-  right:-10px;
-  background:red;
-  color:white;
-  border-radius:50%;
-  padding:2px 6px;
-  font-size:12px;
-}
-
-.cart-page{
-  display:none;
-  position:fixed;
-  top:0;
-  left:0;
-  width:100%;
-  height:100%;
-  background:rgba(0,0,0,.5);
-  justify-content:center;
-  align-items:center;
-}
-
-.cart-box{
-  background:white;
-  width:90%;
-  max-width:350px;
-  padding:15px;
-  border-radius:12px;
-  max-height:80%;
-  overflow:auto;
-}
-
-.cart-item{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  margin:6px 0;
-}
-
-.qty{
-  display:flex;
-  gap:5px;
-  align-items:center;
-}
-.qty button{
-  width:25px;
-  height:25px;
-  border:none;
-  border-radius:50%;
-  background:#7000ff;
-  color:white;
-  font-weight:bold;
-  cursor:pointer;
-}
-
-.cancel-btn{
-  background:#ff4d4d;
-}
-</style>
+        .products-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 20px; }
+        .product-card { background: white; border-radius: 20px; padding: 15px; border: 1px solid #eee; position: relative; }
+        .product-card img { width: 100%; height: 160px; object-fit: cover; border-radius: 15px; }
+        
+        .btn { width: 100%; padding: 12px; border: none; border-radius: 12px; font-weight: 600; cursor: pointer; margin-top: 10px; }
+        .btn-p { background: var(--primary); color: white; }
+        
+        input { width: 100%; padding: 12px; margin-bottom: 10px; border: 1.5px solid #eee; border-radius: 10px; outline: none; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    </style>
 </head>
 <body>
 
-<div class="top">
-  <span class="back" onclick="goHome()">⬅️ Orqaga</span>
-  <div class="cart-icon" onclick="openCart()">
-    <i class="fa-solid fa-cart-shopping"></i>
-    <span class="cart-count" id="cartCount">0</span>
-  </div>
-</div>
-
-<!-- Bosh sahifa -->
-<div class="center" id="home">
-  <button class="btn" onclick="openSeller()"><i class="fa-solid fa-dollar-sign"></i> Sotuvchi</button>
-  <button class="btn" onclick="openBuyer()">Haridor</button>
-</div>
-
-<!-- Sotuvchi form -->
-<div class="seller-form" id="seller">
-  <h3>Mahsulot qo‘shish</h3>
-  <input id="name" placeholder="Mahsulot nomi">
-  <input id="price" placeholder="Narxi">
-  <input id="count" placeholder="Nechta bor">
-  <input type="file" id="image">
-  <button class="btn" onclick="addProduct()">Qo‘shish</button>
-</div>
-
-<!-- Haridor mahsulotlari -->
-<div class="products" id="buyer">
-  <h3>Mahsulotlar</h3>
-  <div id="productList"></div>
-</div>
-
-<!-- Savatcha / Buyurtma -->
-<div class="cart-page" id="cartPage">
-  <div class="cart-box">
-    <h3>Savatcha</h3>
-    <div id="cartItems"></div>
-    <p id="total"></p>
-
-    <h4>Buyurtma berish</h4>
-    <input id="custName" placeholder="Ismingiz">
-    <input id="custPhone" placeholder="Telefon">
-    <input id="custAddress" placeholder="Manzil">
-
-    <button class="btn" onclick="sendOrder()">Buyurtma berish</button>
-    <button class="btn cancel-btn" onclick="cancelOrder()">Buyurtmani bekor qilish</button>
-    <button class="btn" onclick="closeCart()" style="background:#aaa;">Orqaga</button>
-  </div>
-</div>
-<script>
-let products = JSON.parse(localStorage.getItem("products"))  [];
-let cart = JSON.parse(localStorage.getItem("cart"))  [];
-
-function openSeller(){
-  document.getElementById("home").style.display="none";
-  document.getElementById("seller").style.display="block";
-  document.getElementById("buyer").style.display="none";
-  document.querySelector(".back").style.display="block";
-}
-
-function openBuyer(){
-  document.getElementById("home").style.display="none";
-  document.getElementById("seller").style.display="none";
-  document.getElementById("buyer").style.display="grid";
-  document.querySelector(".back").style.display="block";
-  renderProducts();
-}
-
-function goHome(){
-  document.getElementById("home").style.display="flex";
-  document.getElementById("seller").style.display="none";
-  document.getElementById("buyer").style.display="none";
-  document.querySelector(".back").style.display="none";
-}
-
-function addProduct(){
-  let name=document.getElementById("name").value;
-  let price=document.getElementById("price").value;
-  let count=document.getElementById("count").value;
-  let file=document.getElementById("image").files[0];
-
-  if(!name  !price  !count  !file){
-    alert("Hammasini to'ldiring");
-    return;
-  }
-
-  let reader=new FileReader();
-  reader.onload=function(){
-    products.push({name, price, count, image:reader.result});
-    localStorage.setItem("products",JSON.stringify(products));
-    alert("Mahsulot qo‘shildi");
-    document.getElementById("name").value="";
-    document.getElementById("price").value="";
-    document.getElementById("count").value="";
-    document.getElementById("image").value="";
-    renderProducts();
-  };
-
-  reader.readAsDataURL(file);
-}
-
-function renderProducts(){
-  let div=document.getElementById("productList");
-  div.innerHTML="";
-  products.forEach((p,i)=>{
-    div.innerHTML+=`
-    <div class="card">
-      <img src="${p.image}">
-      <div class="card-body">
-        <h4>${p.name}</h4>
-        <p>💰 ${p.price} so'm</p>
-        <p>📦 ${p.count} ta</p>
-        <div class="qty">
-          <button onclick="changeQty(${i},-1)">-</button>
-          <span id="qty-${i}">1</span>
-          <button onclick="changeQty(${i},1)">+</button>
+    <div id="auth-screen">
+        <div id="auth-step-1" class="auth-card">
+            <h2 style="color:var(--primary)">Easy-Bring</h2>
+            <p style="margin: 15px 0; color: #666; font-size: 14px;">Xush kelibsiz! Tizimga kirish uchun telefon raqamingizni kiriting.</p>
+            <input type="tel" id="user-phone" placeholder="+998 90 123 45 67">
+            <button class="btn btn-p" onclick="sendSMSCode()">SMS kod yuborish</button>
         </div>
-        <button class="btn" onclick="addToCart(${i})">Savatchaga qo‘shish</button>
-      </div>
+
+        <div id="auth-step-2" class="auth-card" style="display: none;">
+            <h2>Tasdiqlash</h2>
+            <p id="sms-info" style="margin: 10px 0; color: #666; font-size: 13px;"></p>
+            <input type="number" id="sms-code-input" placeholder="4 xonali kod">
+            <button class="btn btn-p" onclick="verifySMS()">Tasdiqlash</button>
+        </div>
     </div>
-    `;
-  });
-}
 
-function changeQty(index, val){
-  let span = document.getElementById(`qty-${index}`);
-  let qty = parseInt(span.innerText)+val;
-  if(qty<1) qty=1;
-  span.innerText = qty;
-}
+    <div class="sidebar">
+        <div class="logo">🚀 Easy-Bring</div>
+        <button id="btn-shop" class="active" onclick="changeTab('shop')">🛒 Do'kon</button>
+        <button id="btn-fav" onclick="changeTab('fav')">⭐ Sevimlilar</button>
+        <button id="btn-cart" onclick="changeTab('cart')">🛍️ Savat (<span id="cart-cnt">0</span>)</button>
+        <hr style="margin: 15px 0; opacity: 0.1;">
+        <button id="btn-admin" onclick="changeTab('admin')">💼 Do'kon Boshqaruvi</button>
+        <button id="btn-noti" onclick="changeTab('noti')">🔔 So'rovlar</button>
+    </div>
 
-function addToCart(index){
-  let qty = parseInt(document.getElementById(`qty-${index}`).innerText);
-  let item = {...products[index], qty};
-  let exist = cart.find(c=>c.name===item.name);
-  if(exist) exist.qty += qty;
-  else cart.push(item);
-  localStorage.setItem("cart",JSON.stringify(cart));
-  updateCartCount();
-  alert("Mahsulot savatchaga qo‘shildi");
-}
+<div class="main-content">
+        <header>
+            <h3 id="tab-title">Asosiy Do'kon</h3>
+            <div style="font-size: 12px; color: #999;">Foydalanuvchi: <span id="display-phone"></span></div>
+        </header>
 
-function updateCartCount(){
-  let count = cart.reduce((s,i)=>s+i.qty,0);
-  document.getElementById("cartCount").innerText = count;
-}
+        <div class="content-body">
+            <section id="shop" class="active"><div id="grid-shop" class="products-grid"></div></section>
+            <section id="fav"><div id="grid-fav" class="products-grid"></div></section>
+            
+            <section id="admin">
+                <div id="store-login-form" style="max-width: 400px;">
+                    <h3>Do'koningizga kiring</h3>
+                    <p style="font-size:12px; color:gray; margin-bottom:10px;">Har bir do'kon uchun alohida parol talab qilinadi.</p>
+                    <input type="text" id="store-name-input" placeholder="Do'kon nomi (masalan: Artel)">
+                    <input type="password" id="store-pass-input" placeholder="Do'kon maxfiy paroli">
+                    <button class="btn btn-p" onclick="accessStore()">Boshqaruvga kirish</button>
+                </div>
 
-function openCart(){
-  renderCart();
-  document.getElementById("cartPage").style.display="flex";
-}
+                <div id="store-panel" style="display: none;">
+                    <h3 id="current-store-title"></h3>
+                    <div style="max-width: 450px; background:white; padding:25px; border-radius:20px; margin-top:15px;">
+                        <input type="text" id="new-p-name" placeholder="Mahsulot nomi">
+                        <input type="number" id="new-p-price" placeholder="Narxi">
+                        <input type="number" id="new-p-stock" placeholder="Soni">
+                        <input type="file" id="new-p-img" accept="image/*">
+                        <button class="btn btn-p" onclick="addNewProduct()">Sotuvga chiqarish</button>
+                    </div>
+                </div>
+            </section>
 
-function closeCart(){
-  document.getElementById("cartPage").style.display="none";
-}
+            <section id="noti"><div id="list-noti"></div></section>
+            <section id="cart"><div id="list-cart"></div></section>
+        </div>
+    </div>
 
-function renderCart(){
-  let div = document.getElementById("cartItems");
-  div.innerHTML="";
-  let total=0;
-  cart.forEach(i=>{
-    div.innerHTML+=`
-      <div class="cart-item">
-        ${i.name} x ${i.qty} = ${i.price*i.qty} so'm
-      </div>
-    `;
-    total += i.price*i.qty;
-  });
-  document.getElementById("total").innerText = "Jami: "+total+" so'm";
-}
+    <script>
+        // --- DATA STATE ---
+        let products = JSON.parse(localStorage.getItem("eb_p")) || [];
+        let favorites = JSON.parse(localStorage.getItem("eb_f")) || [];
+        let cart = JSON.parse(localStorage.getItem("eb_c")) || [];
+        let notis = JSON.parse(localStorage.getItem("eb_n")) || [];
+        let stores = JSON.parse(localStorage.getItem("eb_stores")) || {}; // { "Do'konNomi": "Parol" }
+        
+        let currentSMSKod = "";
+        let currentUser = localStorage.getItem("eb_user") || null;
+        let activeStore = null;
+        let tempImgData = null;
 
-function sendOrder(){
-  let name=document.getElementById("custName").value;
-  let phone=document.getElementById("custPhone").value;
-  let address=document.getElementById("custAddress").value;
+        // --- AUTH LOGIC (SMS Simulyatsiya) ---
+        if(currentUser) {
+            document.getElementById("auth-screen").style.display = "none";
+            document.getElementById("display-phone").innerText = currentUser;
+        }
 
-  if(!name  !phone || !address){
-    alert("Iltimos, barcha maydonlarni to‘ldiring");
-    return;
-  }
+        function sendSMSCode() {
+            const phone = document.getElementById("user-phone").value;
+            if(phone.length < 9) return alert("Raqamni to'liq kiriting!");
+            
+            currentSMSKod = Math.floor(1000 + Math.random() * 9000).toString();
+            
+            // Haqiqiy SMS o'rniga Alertda ko'rsatamiz (Simulyatsiya)
+            alert("EASY-BRING: Tasdiqlash kodingiz - " + currentSMSKod);
+            
+            document.getElementById("auth-step-1").style.display = "none";
+            document.getElementById("auth-step-2").style.display = "block";
+            document.getElementById("sms-info").innerText = phone + " raqamiga kod yuborildi.";
+        }
 
-  if(cart.length===0){
-    alert("Savatcha bo‘sh!");
-    return;
-  }
-let msg = 🛒 BUYURTMA\n👤 ${name}\n📞 ${phone}\n📍 ${address}\n\n;
-  cart.forEach(i=>{
-    msg += ${i.name} x ${i.qty} = ${i.price*i.qty} so'm\n;
-  });
-  let total = cart.reduce((s,i)=>s+i.qty*i.price,0);
-  msg += 💰 Jami: ${total} so'm;
+        function verifySMS() {
+            const input = document.getElementById("sms-code-input").value;
+            if(input === currentSMSKod) {
+                currentUser = document.getElementById("user-phone").value;
+                localStorage.setItem("eb_user", currentUser);
+                document.getElementById("auth-screen").style.display = "none";
+                document.getElementById("display-phone").innerText = currentUser;
+            } else {
+                alert("Kod noto'g'ri!");
+            }
+        }
 
-  alert("Buyurtma tayyor:\n\n" + msg);
+// --- STORE SECURITY ---
+        function accessStore() {
+            const name = document.getElementById("store-name-input").value;
+            const pass = document.getElementById("store-pass-input").value;
 
-  cart=[];
-  localStorage.setItem("cart",JSON.stringify(cart));
-  updateCartCount();
-  closeCart();
-}
+            if(!name || !pass) return alert("Ma'lumotlarni kiriting!");
 
-function cancelOrder(){
-  if(confirm("Savatchani bo‘shatishni istaysizmi?")){
-    cart=[];
-    localStorage.setItem("cart",JSON.stringify(cart));
-    updateCartCount();
-    renderCart();
-    alert("Savatcha bo‘shatildi");
-  }
-}
+            // Agar do'kon hali yo'q bo'lsa, uni birinchi marta kiritgan odam "egasi" bo'ladi
+            if(!stores[name]) {
+                if(confirm(name + " do'koni hali ro'yxatdan o'tmagan. Uni ushbu parol bilan yarataylikmi?")) {
+                    stores[name] = pass;
+                    localStorage.setItem("eb_stores", JSON.stringify(stores));
+                } else return;
+            }
 
-updateCartCount();
-renderProducts();
-</script>
+            // Parolni tekshirish
+            if(stores[name] === pass) {
+                activeStore = name;
+                document.getElementById("store-login-form").style.display = "none";
+                document.getElementById("store-panel").style.display = "block";
+                document.getElementById("current-store-title").innerText = "🏪 " + name + " boshqaruv paneli";
+            } else {
+                alert("Ushbu do'kon uchun parol noto'g'ri!");
+            }
+        }
 
+        // --- CORE FUNCTIONS ---
+        function changeTab(id) {
+            document.querySelectorAll("section").forEach(s => s.classList.remove("active"));
+            document.querySelectorAll(".sidebar button").forEach(b => b.classList.remove("active"));
+            document.getElementById(id).classList.add("active");
+            document.getElementById("btn-"+id).classList.add("active");
+            document.getElementById("tab-title").innerText = id === 'shop' ? "Asosiy Do'kon" : (id === 'admin' ? "Boshqaruv" : "Easy-Bring");
+
+            if(id === 'shop') renderProducts(products, 'grid-shop');
+            if(id === 'fav') renderProducts(products.filter(p => favorites.includes(p.id)), 'grid-fav');
+            if(id === 'noti') renderNotis();
+            if(id === 'cart') renderCart();
+        }
+
+        document.getElementById("new-p-img").onchange = (e) => {
+            let fr = new FileReader();
+            fr.onload = () => tempImgData = fr.result;
+            fr.readAsDataURL(e.target.files[0]);
+        };
+
+        function addNewProduct() {
+            const n = document.getElementById("new-p-name").value;
+            const p = parseInt(document.getElementById("new-p-price").value);
+            const s = parseInt(document.getElementById("new-p-stock").value);
+            if(!n || !p) return alert("To'ldiring!");
+
+            products.push({ id: Date.now(), name: n, price: p, stock: s, store: activeStore, img: tempImgData || 'https://via.placeholder.com/200' });
+            localStorage.setItem("eb_p", JSON.stringify(products));
+            alert("Mahsulot do'konga qo'shildi!");
+            location.reload();
+        }
+
+        function renderProducts(data, gridId) {
+            const grid = document.getElementById(gridId);
+            grid.innerHTML = data.map(p => {
+                const isOut = p.stock <= 0;
+                const isFav = favorites.includes(p.id);
+                return `
+                    <div class="product-card">
+                        <span onclick="toggleFav(${p.id})" style="position:absolute; top:10px; right:10px; cursor:pointer; font-size:20px; color:${isFav?'#ffc107':'#ccc'}">★</span>
+                        <img src="${p.img}">
+                        <div style="font-weight:600; margin-top:10px;">${p.name}</div>
+                        <div style="font-size:11px; color:var(--primary)">Sotuvchi: ${p.store}</div>
+                        <div style="font-size:12px; color:${isOut?'red':'green'}">${isOut?'Tugagan':'Zaxira: '+p.stock}</div>
+                        <div style="text-decoration:line-through; font-size:12px; color:#999">${(p.price*1.3).toLocaleString()} so'm</div>
+
+<div style="font-weight:700; font-size:16px;">${p.price.toLocaleString()} so'm</div>
+                        <button class="btn btn-p" onclick="${isOut ? sendEBNoti(${p.id}) : addToEBCart(${p.id})}" ${isOut?'style="background:#eee;color:#999"':''}>
+                            ${isOut ? 'So\'rov qoldirish' : 'Savatga'}
+                        </button>
+                    </div>
+                `;
+            }).join('') || "Mahsulotlar yo'q";
+        }
+
+        function addToEBCart(id) {
+            const p = products.find(x => x.id === id);
+            p.stock--;
+            cart.push({...p, cartId: Date.now()});
+            saveData();
+            renderProducts(products, 'grid-shop');
+            updateBadges();
+        }
+
+        function sendEBNoti(id) {
+            const p = products.find(x => x.id === id);
+            const msg = Sizning <b>"${p.name}"</b> mahsulotingizga <b>${new Date().toLocaleDateString()}</b> kuni yangi buyurtma so'rovi keldi.;
+            notis.unshift({ text: msg, store: p.store });
+            localStorage.setItem("eb_n", JSON.stringify(notis));
+            alert("Sotuvchiga so'rov yuborildi!");
+        }
+
+        function toggleFav(id) {
+            if(favorites.includes(id)) favorites = favorites.filter(x => x !== id);
+            else favorites.push(id);
+            localStorage.setItem("eb_f", JSON.stringify(favorites));
+            changeTab(document.querySelector("section.active").id);
+        }
+
+        function renderNotis() {
+            const box = document.getElementById("list-noti");
+            // Sotuvchi faqat o'z do'koniga tegishli xabarlarni ko'radi
+            if(!activeStore) return box.innerHTML = "<p>Xabarlarni ko'rish uchun Do'kon Boshqaruvidan tizimga kiring.</p>";
+            const myNotis = notis.filter(n => n.store === activeStore);
+            box.innerHTML = myNotis.map(n => <div style="background:white; padding:15px; border-radius:12px; margin-bottom:10px; border-left:4px solid var(--primary)">${n.text}</div>).join('') || "Sizda bildirishnomalar yo'q.";
+        }
+
+        function renderCart() {
+            const box = document.getElementById("list-cart");
+            let total = 0;
+            box.innerHTML = cart.map(item => {
+                total += item.price;
+                return <div style="background:white; padding:10px; border-radius:10px; margin-bottom:5px; display:flex; justify-content:space-between;"><span>${item.name}</span><b>${item.price.toLocaleString()} so'm</b></div>;
+            }).join('') || "Savat bo'sh";
+            if(cart.length) box.innerHTML += <div style="margin-top:20px; font-weight:700">Jami: ${total.toLocaleString()} so'm</div><button class="btn btn-p" onclick="alert('Xarid yakunlandi!')">Rasmiylashtirish</button>;
+        }
+
+        function saveData() {
+            localStorage.setItem("eb_p", JSON.stringify(products));
+            localStorage.setItem("eb_c", JSON.stringify(cart));
+        }
+
+        function updateBadges() {
+            document.getElementById("cart-cnt").innerText = cart.length;
+        }
+
+        // Init
+        renderProducts(products, 'grid-shop');
+        updateBadges();
+    </script>
 </body>
 </html>
