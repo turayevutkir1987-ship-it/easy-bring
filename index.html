@@ -3,256 +3,228 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Easy-Bring | Enterprise Edition</title>
+    <title>Easy-Bring | Direct Edition</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
     <style>
-        :root { --primary: #7000ff; --secondary: #00d1b2; --bg: #f5f7fa; }
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Poppins', sans-serif; -webkit-tap-highlight-color: transparent; }
-        body { background: var(--bg); height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
-
-        /* Main UI */
-        .main-content { flex: 1; display: flex; flex-direction: column; }
-        header { background: white; padding: 15px 25px; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100; }
-        .logo { color: var(--primary); font-size: 20px; font-weight: 800; }
+        :root { --primary: #7000ff; --bg: #f8f9fc; --text: #1a1a1a; }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', sans-serif; -webkit-tap-highlight-color: transparent; }
         
-        .content-body { padding: 20px; overflow-y: auto; flex: 1; padding-bottom: 80px; /* Navigatsiya uchun joy */ }
-        section { display: none; }
-        section.active { display: block; animation: fadeIn 0.3s; }
+        body { background: var(--bg); color: var(--text); height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
 
-        /* Products Grid */
-        .products-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; }
-        .product-card { background: white; border-radius: 20px; padding: 12px; border: 1px solid #eee; position: relative; overflow: hidden; }
-        .product-card:active { transform: scale(0.97); transition: 0.1s; }
-        .product-card img { width: 100%; height: 140px; object-fit: cover; border-radius: 15px; }
-        
-        /* Buttons */
-        .btn { width: 100%; padding: 10px; border: none; border-radius: 12px; font-weight: 600; cursor: pointer; margin-top: 10px; font-size: 13px; }
-        .btn-p { background: var(--primary); color: white; box-shadow: 0 4px 10px rgba(112, 0, 255, 0.2); }
-        .btn-p:active { background: #6000e0; }
-        
-        /* Forms */
-        input, select { width: 100%; padding: 12px; margin-bottom: 10px; border: 1.5px solid #eee; border-radius: 10px; outline: none; background: white; font-size: 14px; }
-        input:focus, select:focus { border-color: var(--primary); }
+        /* --- Header --- */
+        header { 
+            background: white; 
+            padding: 15px 20px; 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            border-bottom: 1px solid #eee;
+            position: sticky; top: 0; z-index: 100;
+        }
+        .logo { font-size: 22px; font-weight: 800; color: var(--primary); letter-spacing: -1px; }
+        .user-tag { font-size: 12px; font-weight: 600; color: #666; background: #eee; padding: 4px 10px; border-radius: 20px; }
 
-        /* Navigation Bar (Mobile) */
-        .nav-bar { position: fixed; bottom: 0; left: 0; right: 0; height: 65px; background: white; border-top: 1px solid #eee; display: flex; justify-content: space-around; align-items: center; z-index: 1000; box-shadow: 0 -5px 15px rgba(0,0,0,0.03); }
-        .nav-item { display: flex; flex-direction: column; align-items: center; color: #888; text-decoration: none; cursor: pointer; transition: 0.2s; font-size: 10px; }
-        .nav-item.active { color: var(--primary); font-weight: 600; }
-        .nav-item i { font-size: 20px; margin-bottom: 2px; }
+        /* --- Content Area --- */
+        .content { flex: 1; overflow-y: auto; padding: 15px; padding-bottom: 90px; }
+        section { display: none; animation: fadeIn 0.4s ease; }
+        section.active { display: block; }
 
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        /* --- Product Grid --- */
+        .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+        .card { background: white; border-radius: 20px; padding: 10px; border: 1px solid #eee; position: relative; transition: 0.2s; }
+        .card:active { transform: scale(0.96); }
+        .card img { width: 100%; height: 130px; object-fit: cover; border-radius: 15px; margin-bottom: 8px; }
+        .card-price { font-weight: 800; color: var(--primary); font-size: 15px; margin-bottom: 5px; }
+        .card-title { font-size: 13px; font-weight: 600; margin-bottom: 8px; color: #333; height: 32px; overflow: hidden; }
+
+        /* --- Buttons --- */
+        .btn { width: 100%; padding: 10px; border: none; border-radius: 12px; font-weight: 700; cursor: pointer; transition: 0.2s; font-size: 12px; }
+        .btn-p { background: var(--primary); color: white; }
+        .btn-p:active { opacity: 0.8; }
+
+        /* --- Admin Form --- */
+        .admin-box { background: white; padding: 20px; border-radius: 24px; border: 1px solid #eee; }
+        input { width: 100%; padding: 14px; border: 1px solid #eee; border-radius: 12px; margin-bottom: 10px; outline: none; background: #fdfdfd; }
+        input:focus { border-color: var(--primary); }
+
+        /* --- Bottom Nav --- */
+        nav { 
+            position: fixed; bottom: 0; left: 0; right: 0; 
+            height: 70px; background: white; border-top: 1px solid #eee; 
+            display: flex; justify-content: space-around; align-items: center; z-index: 1000; 
+        }
+        .nav-btn { display: flex; flex-direction: column; align-items: center; color: #aaa; cursor: pointer; font-size: 10px; font-weight: 600; }
+        .nav-btn.active { color: var(--primary); }
+        .nav-btn i { font-size: 22px; margin-bottom: 3px; font-style: normal; }
+
+        .badge { position: absolute; top: -5px; right: -8px; background: red; color: white; font-size: 9px; padding: 2px 6px; border-radius: 10px; }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
 <body>
 
     <header>
-        <div class="logo">🚀 Easy-Bring</div>
-        <div id="user-info" style="font-size: 12px; font-weight: 500;"></div>
+        <div class="logo">EasyBring</div>
+        <div id="u-name" class="user-tag">Mehmon</div>
     </header>
 
-    <div class="main-content">
-        <div class="content-body">
-            <section id="sec-shop" class="active">
-                <h2 style="margin-bottom: 15px; font-size: 18px;">Do'kon</h2>
-                <div id="grid-shop" class="products-grid"></div>
-            </section>
-            
-            <section id="sec-cart">
-                <h2 style="margin-bottom: 15px; font-size: 18px;">Savat</h2>
-                <div id="list-cart"></div>
-            </section>
+    <div class="content">
+        <section id="s-shop" class="active">
+            <h3 style="margin-bottom:15px">Mahsulotlar</h3>
+            <div id="grid-p" class="grid"></div>
+        </section>
 
-            <section id="sec-admin">
-                <div id="admin-panel" style="max-width: 450px; background:white; padding:25px; border-radius:20px; border: 1px solid #eee">
-                    <h3>Yangi mahsulot</h3>
-                    <p style="font-size:12px; color:gray; margin-bottom:15px;">Mahsulot ma'lumotlarini kiriting.</p>
-                    <input type="text" id="p-name" placeholder="Mahsulot nomi">
-                    <input type="number" id="p-price" placeholder="Narxi">
-                    <div style="font-size:11px; color:#888; margin-bottom:5px">Mahsulot rasmi:</div>
-                    <input type="file" id="p-img" accept="image/*" style="border:none; padding: 5px">
-                    <button class="btn btn-p" onclick="addProduct()">Sotuvga chiqarish</button>
+        <section id="s-cart">
+            <h3 style="margin-bottom:15px">Savatingiz</h3>
+            <div id="cart-list"></div>
+            <div id="cart-res" style="display:none; margin-top:20px; padding:20px; background:white; border-radius:20px;">
+                <div style="display:flex; justify-content:space-between; margin-bottom:15px">
+                    <span style="font-weight:600">Jami:</span>
+                    <span id="total-price" style="font-weight:800; color:var(--primary)">0 so'm</span>
                 </div>
-            </section>
-        </div>
+                <button class="btn btn-p" onclick="app.checkout()" style="padding:15px">Buyurtma berish</button>
+            </div>
+        </section>
+
+        <section id="s-admin">
+            <div class="admin-box">
+                <h3 style="margin-bottom:15px">Yangi mahsulot</h3>
+                <input type="text" id="in-name" placeholder="Nomi">
+                <input type="number" id="in-price" placeholder="Narxi">
+                <div style="font-size:11px; color:#999; margin-bottom:5px">Rasm tanlang:</div>
+                <input type="file" id="in-img" accept="image/*" style="border:none">
+                <button class="btn btn-p" onclick="app.addProduct()">Qo'shish</button>
+            </div>
+        </section>
     </div>
 
-    <nav class="nav-bar">
-        <div class="nav-item active" onclick="nav('sec-shop', this)">
-            <i>🏠</i>
-            <span>Do'kon</span>
+    <nav>
+        <div class="nav-btn active" onclick="app.nav('s-shop', this)"><i>🏠</i><span>Do'kon</span></div>
+        <div class="nav-btn" onclick="app.nav('s-cart', this)" style="position:relative">
+            <i>🛒</i><span>Savat</span>
+            <div id="c-badge" class="badge" style="display:none">0</div>
         </div>
-        <div class="nav-item" onclick="nav('sec-cart', this)">
-            <div style="position:relative">
-                <i>🛒</i>
-                <span id="cart-badge" style="position:absolute; top:-5px; right:-10px; background:red; color:white; font-size:9px; padding:2px 5px; border-radius:10px; display:none">0</span>
-            </div>
-            <span>Savat</span>
-        </div>
-        <div class="nav-item" onclick="nav('sec-admin', this)">
-            <i>💼</i>
-            <span>Admin</span>
-        </div>
+        <div class="nav-btn" onclick="app.nav('s-admin', this)"><i>⚙️</i><span>Admin</span></div>
     </nav>
 
     <script>
-        // --- CONFIG ---
         const tg = window.Telegram.WebApp;
-        if (tg) {
-            tg.expand(); // Botni to'liq ekranga ochish
-            const userName = tg.initDataUnsafe?.user?.first_name || "Mehmon";
-            document.getElementById('user-info').innerText = userName;
-        }
 
-        // --- DATA STATE ---
-        let state = {
-            products: JSON.parse(localStorage.getItem('eb_prods')) || [],
+        const app = {
+            db: JSON.parse(localStorage.getItem('eb_v5')) || [],
             cart: [],
-            imgTemp: null
-        };
+            imgCache: null,
 
-        // --- CORE FUNCTIONS ---
+            init() {
+                tg.expand();
+                document.getElementById('u-name').innerText = tg.initDataUnsafe?.user?.first_name || "Foydalanuvchi";
+                
+                // Rasm yuklashni kuzatish
+                document.getElementById('in-img').onchange = (e) => {
+                    const fr = new FileReader();
+                    fr.onload = () => app.imgCache = fr.result;
+                    fr.readAsDataURL(e.target.files[0]);
+                };
 
-        // Navigatsiya
-        function nav(secId, el) {
-            document.querySelectorAll('section').forEach(s => s.classList.remove('active'));
-            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-            document.getElementById(secId).classList.add('active');
-            el.classList.add('active');
-            
-            if(secId === 'sec-shop') renderProducts();
-            if(secId === 'sec-cart') renderCart();
-        }
+                this.render();
+            },
 
-        // Rasm handler
-        document.getElementById('p-img').onchange = (e) => {
-            const reader = new FileReader();
-            reader.onload = () => state.imgTemp = reader.result;
-            reader.readAsDataURL(e.target.files[0]);
-        };
+            nav(id, el) {
+                document.querySelectorAll('section').forEach(s => s.classList.remove('active'));
+                document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+                document.getElementById(id).classList.add('active');
+                el.classList.add('active');
+                if(id === 's-cart') this.renderCart();
+                tg.HapticFeedback.impactOccurred('light');
+            },
 
-        // Mahsulot qo'shish (Admin)
-        function addProduct() {
-            const name = document.getElementById('p-name').value;
-            const price = document.getElementById('p-price').value;
+            addProduct() {
+                const n = document.getElementById('in-name').value;
+                const p = document.getElementById('in-price').value;
+                if(!n || !p) return tg.showAlert("Ma'lumotni to'ldiring");
 
-            if(!name || !price) return;
+                const newItem = { id: Date.now(), name: n, price: parseInt(p), img: app.imgCache || 'https://via.placeholder.com/150' };
+                this.db.unshift(newItem);
+                localStorage.setItem('eb_v5', JSON.stringify(this.db));
+                
+                // Formani tozalash
+                document.getElementById('in-name').value = '';
+                document.getElementById('in-price').value = '';
+                app.imgCache = null;
 
-            const newP = {
-                id: Date.now(),
-                name,
-                price: parseInt(price),
-                img: state.imgTemp || 'https://via.placeholder.com/150'
-            };
+                tg.showPopup({ message: "Mahsulot qo'shildi!" });
+                this.render();
+                this.nav('s-shop', document.querySelectorAll('.nav-btn')[0]);
+            },
 
-            state.products.push(newP);
-            localStorage.setItem('eb_prods', JSON.stringify(state.products));
-            
-            // Tozalash
-            document.getElementById('p-name').value = '';
-            document.getElementById('p-price').value = '';
-            document.getElementById('p-img').value = ''; // File inputni tozalash
-            state.imgTemp = null;
-            
-            if(tg) tg.HapticFeedback.notificationOccurred('success');
-            renderProducts();
-            nav('sec-shop', document.querySelectorAll('.nav-item')[0]); // Asosiy sahifaga qaytish
-        }
-
-        // Mahsulotlarni chiqarish (Shop)
-        function renderProducts() {
-            const grid = document.getElementById('grid-shop');
-            grid.innerHTML = state.products.map(p => `
-                <div class="product-card">
-                    <img src="${p.img}">
-                    <div style="font-weight:600; font-size:14px; margin-top:8px">${p.name}</div>
-                    <div style="font-weight:700; color:var(--primary); font-size:15px;">${p.price.toLocaleString()} so'm</div>
-                    <button class="btn btn-p" style="padding: 8px; margin-top:8px; font-size:12px" 
-                        onclick="addToCart(${p.id})">Savatga</button>
-                </div>
-            `).join('') || `<p style="grid-column: 1/3; text-align:center; padding:20px; color:#888;">Hozircha mahsulotlar yo'q.</p>`;
-        }
-
-        // Savatga qo'shish
-        function addToCart(id) {
-            const p = state.products.find(x => x.id === id);
-            state.cart.push({...p, cartId: Date.now()});
-            updateCartBadge();
-            if(tg) tg.HapticFeedback.impactOccurred('medium');
-        }
-
-        // Savat nishonini yangilash
-        function updateCartBadge() {
-            const b = document.getElementById('cart-badge');
-            if(state.cart.length > 0) {
-                b.style.display = 'block';
-                b.innerText = state.cart.length;
-            } else {
-                b.style.display = 'none';
-            }
-        }
-
-        // Savatni chiqarish
-        function renderCart() {
-            const list = document.getElementById('list-cart');
-            let total = 0;
-            let html = state.cart.map(item => {
-                total += item.price;
-                return `
-                    <div style="background:white; padding:15px; border-radius:15px; margin-bottom:10px; display:flex; justify-content:space-between; align-items:center; border: 1px solid #eee">
-                        <div>
-                            <div style="font-weight:600">${item.name}</div>
-                            <div style="font-size:12px; color:var(--primary)">${item.price.toLocaleString()} so'm</div>
-                        </div>
-                        <button onclick="removeFromCart(${item.cartId})" style="border:none; background:none; color:red; font-size:16px; font-weight:bold; cursor:pointer">×</button>
+            render() {
+                const grid = document.getElementById('grid-p');
+                grid.innerHTML = this.db.map(x => `
+                    <div class="card">
+                        <img src="${x.img}">
+                        <div class="card-price">${x.price.toLocaleString()} so'm</div>
+                        <div class="card-title">${x.name}</div>
+                        <button class="btn btn-p" onclick="app.addToCart(${x.id})">Savatga</button>
                     </div>
-                `;
-            }).join('');
+                `).join('') || `<p style="grid-column:1/3; text-align:center; padding:50px; opacity:0.5">Mahsulotlar yo'q</p>`;
+            },
 
-            if(state.cart.length > 0) {
-                html += `
-                    <div style="margin-top:20px; padding:15px; text-align:right">
-                        <h3>Jami: ${total.toLocaleString()} so'm</h3>
-                        <button class="btn btn-p" style="margin-top:15px; width: auto; padding: 12px 25px;" onclick="checkout()">Sotib olish</button>
-                    </div>
-                `;
-            } else {
-                html = "<p style='text-align:center; color:#888; padding: 20px;'>Savat bo'sh.</p>";
-            }
-            list.innerHTML = html;
-        }
+            addToCart(id) {
+                const item = this.db.find(x => x.id === id);
+                this.cart.push({...item, cartId: Date.now()});
+                this.updateBadge();
+                tg.HapticFeedback.notificationOccurred('success');
+            },
 
-        // Savatdan o'chirish
-        function removeFromCart(cartId) {
-            state.cart = state.cart.filter(item => item.cartId !== cartId);
-            renderCart();
-            updateCartBadge();
-        }
+            updateBadge() {
+                const b = document.getElementById('c-badge');
+                if(this.cart.length > 0) { b.style.display = 'block'; b.innerText = this.cart.length; }
+            },
 
-        // Xaridni rasmiylashtirish simulyatsiyasi
-        function checkout() {
-            if(tg) {
-                tg.showConfirm("Xaridni tasdiqlaysizmi?", (ok) => {
+            renderCart() {
+                const list = document.getElementById('cart-list');
+                const res = document.getElementById('cart-res');
+                if(this.cart.length === 0) {
+                    list.innerHTML = "<p style='text-align:center; padding:50px; opacity:0.5'>Savat bo'sh</p>";
+                    res.style.display = 'none';
+                    return;
+                }
+                res.style.display = 'block';
+                let total = 0;
+                list.innerHTML = this.cart.map(i => {
+                    total += i.price;
+                    return `<div style="background:white; padding:15px; border-radius:15px; margin-bottom:10px; display:flex; justify-content:space-between; align-items:center; border:1px solid #eee">
+                        <div><b>${i.name}</b><br><span style="color:var(--primary); font-size:12px">${i.price.toLocaleString()} so'm</span></div>
+                        <button onclick="app.removeCart(${i.cartId})" style="border:none; background:none; font-size:20px">🗑️</button>
+                    </div>`;
+                }).join('');
+                document.getElementById('total-price').innerText = total.toLocaleString() + " so'm";
+            },
+
+            removeCart(cid) {
+                this.cart = this.cart.filter(x => x.cartId !== cid);
+                this.renderCart();
+                this.updateBadge();
+                if(this.cart.length === 0) document.getElementById('c-badge').style.display = 'none';
+            },
+
+            checkout() {
+                tg.showConfirm("Buyurtmani tasdiqlaysizmi?", (ok) => {
                     if(ok) {
-                        state.cart = [];
-                        updateCartBadge();
-                        nav('sec-shop', document.querySelectorAll('.nav-item')[0]);
-                        tg.showAlert("Rahmat! Xarid muvaffaqiyatli amalga oshirildi.");
+                        tg.showAlert("Rahmat! Buyurtma qabul qilindi.");
+                        this.cart = [];
+                        this.updateBadge();
+                        document.getElementById('c-badge').style.display = 'none';
+                        this.nav('s-shop', document.querySelectorAll('.nav-btn')[0]);
                     }
                 });
-            } else {
-                if(confirm("Xaridni tasdiqlaysizmi?")) {
-                    state.cart = [];
-                    updateCartBadge();
-                    nav('sec-shop', document.querySelectorAll('.nav-item')[0]);
-                    alert("Xarid muvaffaqiyatli amalga oshirildi.");
-                }
             }
-        }
+        };
 
-        // Init
-        renderProducts();
-        updateCartBadge();
+        app.init();
     </script>
 </body>
 </html>
+ 
