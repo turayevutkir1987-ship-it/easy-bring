@@ -2,286 +2,295 @@
 <html lang="uz">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Easy-Bring | Enterprise Edition</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Easy-Bring | Ultimate OS</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap" rel="stylesheet">
+    
     <style>
-        :root { --primary: #7000ff; --secondary: #00d1b2; --bg: #f5f7fa; }
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Poppins', sans-serif; }
-        body { background: var(--bg); height: 100vh; display: flex; overflow: hidden; }
+        :root {
+            --accent: #ff3d00;
+            --primary: #6366f1;
+            --bg: #050505;
+            --surface: #121212;
+            --glass: rgba(255, 255, 255, 0.05);
+            --text: #ffffff;
+            --success: #00e676;
+        }
 
-        /* Auth Screen */
-        #auth-screen { position: fixed; inset: 0; background: white; z-index: 9999; display: flex; align-items: center; justify-content: center; }
-        .auth-card { width: 380px; padding: 40px; border-radius: 30px; box-shadow: 0 10px 40px rgba(0,0,0,0.1); text-align: center; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; -webkit-tap-highlight-color: transparent; }
+        body { background: var(--bg); color: var(--text); overflow-x: hidden; min-height: 100vh; padding-bottom: 100px; }
 
-        /* Main UI */
-        .sidebar { width: 280px; background: #fff; border-right: 1px solid #eee; display: flex; flex-direction: column; padding: 25px; }
-        .logo { color: var(--primary); font-size: 26px; font-weight: 800; margin-bottom: 30px; text-align: center; }
-        .sidebar button { background: none; border: none; padding: 15px; text-align: left; font-size: 14px; cursor: pointer; border-radius: 12px; margin-bottom: 5px; color: #444; transition: 0.2s; position: relative; }
-        .sidebar button.active { background: var(--primary); color: white; }
-        
-        .main-content { flex: 1; display: flex; flex-direction: column; }
-        header { background: white; padding: 20px 40px; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; align-items: center; }
-        
-        .content-body { padding: 30px; overflow-y: auto; flex: 1; }
+        /* --- 💎 PREMIUM ANIMATIONS --- */
+        @keyframes slideIn { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
+
+        /* --- 📱 UI COMPONENTS --- */
+        header { padding: 25px 20px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100; background: rgba(5,5,5,0.8); backdrop-filter: blur(10px); }
+        .logo { font-weight: 800; font-size: 22px; background: linear-gradient(90deg, #fff, var(--primary)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+
+        .search-box { margin: 0 20px 20px; position: relative; }
+        .search-box input { width: 100%; padding: 15px 45px; background: var(--surface); border: 1px solid var(--glass); border-radius: 18px; color: white; outline: none; transition: 0.3s; }
+        .search-box input:focus { border-color: var(--primary); box-shadow: 0 0 15px rgba(99, 102, 241, 0.3); }
+
+        .categories { display: flex; gap: 10px; overflow-x: auto; padding: 0 20px 20px; scrollbar-width: none; }
+        .cat-chip { padding: 10px 20px; background: var(--surface); border-radius: 30px; white-space: nowrap; font-size: 13px; font-weight: 600; cursor: pointer; border: 1px solid var(--glass); }
+        .cat-chip.active { background: var(--primary); border-color: var(--primary); }
+
+        .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; padding: 0 20px; }
+        .product-card { background: var(--surface); border-radius: 24px; padding: 12px; border: 1px solid var(--glass); animation: slideIn 0.5s ease; position: relative; }
+        .product-card img { width: 100%; height: 160px; object-fit: cover; border-radius: 20px; margin-bottom: 10px; }
+        .price-badge { position: absolute; top: 20px; right: 20px; background: var(--primary); padding: 5px 12px; border-radius: 12px; font-size: 12px; font-weight: 800; box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
+
+        /* --- 🛒 CART & DRAWER --- */
+        .cart-item { display: flex; align-items: center; gap: 15px; background: var(--glass); padding: 15px; border-radius: 20px; margin-bottom: 10px; }
+        .cart-item img { width: 60px; height: 60px; border-radius: 12px; object-fit: cover; }
+
+        /* --- 🕹 NAVIGATION --- */
+        nav { position: fixed; bottom: 25px; left: 20px; right: 20px; height: 75px; background: rgba(18, 18, 18, 0.9); backdrop-filter: blur(20px); border-radius: 25px; display: flex; justify-content: space-around; align-items: center; border: 1px solid var(--glass); z-index: 1000; }
+        .nav-link { color: #555; text-decoration: none; display: flex; flex-direction: column; align-items: center; font-size: 10px; font-weight: 600; gap: 5px; transition: 0.3s; }
+        .nav-link.active { color: var(--primary); }
+        .nav-link i { font-size: 24px; }
+
+        /* --- 💼 ADMIN PANEL --- */
+        .admin-form { padding: 25px; background: var(--surface); border-radius: 30px; border: 1px solid var(--glass); mar
+
+gin: 20px; }
+        input, select, textarea { width: 100%; padding: 15px; background: rgba(255,255,255,0.03); border: 1px solid var(--glass); border-radius: 15px; color: white; margin-bottom: 15px; font-size: 14px; }
+        .btn-main { width: 100%; padding: 18px; border-radius: 18px; border: none; background: linear-gradient(135deg, var(--primary), #4f46e5); color: white; font-weight: 800; font-size: 16px; cursor: pointer; transition: 0.3s; }
+        .btn-main:active { transform: scale(0.95); }
+
         section { display: none; }
-        section.active { display: block; animation: fadeIn 0.3s; }
+        section.active { display: block; }
 
-        .products-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 20px; }
-        .product-card { background: white; border-radius: 20px; padding: 15px; border: 1px solid #eee; position: relative; }
-        .product-card img { width: 100%; height: 160px; object-fit: cover; border-radius: 15px; }
-        
-        .btn { width: 100%; padding: 12px; border: none; border-radius: 12px; font-weight: 600; cursor: pointer; margin-top: 10px; }
-        .btn-p { background: var(--primary); color: white; }
-        
-        input { width: 100%; padding: 12px; margin-bottom: 10px; border: 1.5px solid #eee; border-radius: 10px; outline: none; }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        .cart-count { position: absolute; top: -5px; right: -5px; background: var(--accent); color: white; width: 18px; height: 18px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 10px; }
     </style>
 </head>
 <body>
 
-    <div id="auth-screen">
-        <div id="auth-step-1" class="auth-card">
-            <h2 style="color:var(--primary)">Easy-Bring</h2>
-            <p style="margin: 15px 0; color: #666; font-size: 14px;">Xush kelibsiz! Tizimga kirish uchun telefon raqamingizni kiriting.</p>
-            <input type="tel" id="user-phone" placeholder="+998 90 123 45 67">
-            <button class="btn btn-p" onclick="sendSMSCode()">SMS kod yuborish</button>
-        </div>
+    <header>
+        <div class="logo">EASY BRING PRO</div>
+        <div id="status-dot" style="width: 10px; height: 10px; background: var(--success); border-radius: 50%; box-shadow: 0 0 10px var(--success)"></div>
+    </header>
 
-        <div id="auth-step-2" class="auth-card" style="display: none;">
-            <h2>Tasdiqlash</h2>
-            <p id="sms-info" style="margin: 10px 0; color: #666; font-size: 13px;"></p>
-            <input type="number" id="sms-code-input" placeholder="4 xonali kod">
-            <button class="btn btn-p" onclick="verifySMS()">Tasdiqlash</button>
+    <div id="discovery-ui">
+        <div class="search-box">
+            <input type="text" id="search-input" placeholder="Mahsulotlarni qidirish..." oninput="app.search()">
+        </div>
+        <div class="categories">
+            <div class="cat-chip active" onclick="app.filterCat('Barchasi', this)">Barchasi</div>
+            <div class="cat-chip" onclick="app.filterCat('Elektronika', this)">Elektronika</div>
+            <div class="cat-chip" onclick="app.filterCat('Kiyimlar', this)">Kiyimlar</div>
+            <div class="cat-chip" onclick="app.filterCat('Oziq-ovqat', this)">Oziq-ovqat</div>
         </div>
     </div>
 
-    <div class="sidebar">
-        <div class="logo">🚀 Easy-Bring</div>
-        <button id="btn-shop" class="active" onclick="changeTab('shop')">🛒 Do'kon</button>
-        <button id="btn-fav" onclick="changeTab('fav')">⭐ Sevimlilar</button>
-        <button id="btn-cart" onclick="changeTab('cart')">🛍️ Savat (<span id="cart-cnt">0</span>)</button>
-        <hr style="margin: 15px 0; opacity: 0.1;">
-        <button id="btn-admin" onclick="changeTab('admin')">💼 Do'kon Boshqaruvi</button>
-        <button id="btn-noti" onclick="changeTab('noti')">🔔 So'rovlar</button>
-    </div>
+    <main id="app-router">
+        
+        <section id="shop" class="active">
+            <div class="grid" id="product-grid"></div>
+        </section>
 
-<div class="main-content">
-        <header>
-            <h3 id="tab-title">Asosiy Do'kon</h3>
-            <div style="font-size: 12px; color: #999;">Foydalanuvchi: <span id="display-phone"></span></div>
-        </header>
-
-        <div class="content-body">
-            <section id="shop" class="active"><div id="grid-shop" class="products-grid"></div></section>
-            <section id="fav"><div id="grid-fav" class="products-grid"></div></section>
-            
-            <section id="admin">
-                <div id="store-login-form" style="max-width: 400px;">
-                    <h3>Do'koningizga kiring</h3>
-                    <p style="font-size:12px; color:gray; margin-bottom:10px;">Har bir do'kon uchun alohida parol talab qilinadi.</p>
-                    <input type="text" id="store-name-input" placeholder="Do'kon nomi (masalan: Artel)">
-                    <input type="password" id="store-pass-input" placeholder="Do'kon maxfiy paroli">
-                    <button class="btn btn-p" onclick="accessStore()">Boshqaruvga kirish</button>
+        <section id="cart" style="padding: 20px;">
+            <h2 style="margin-bottom: 20px;">Sizning savatingiz</h2>
+            <div id="cart-list"></div>
+            <div id="cart-footer" style="margin-top: 30px; display:none;">
+                <div style="display:flex; justify-content:space-between; margin-bottom:20px; font-size:20px; font-weight:800;">
+                    <span>Jami:</span> <span id="total-price">0</span>
                 </div>
+                <button class="btn-main" onclick="app.checkout()">Buyurtmani tasdiqlash</button>
+            </div>
+        </section>
 
-                <div id="store-panel" style="display: none;">
-                    <h3 id="current-store-title"></h3>
-                    <div style="max-width: 450px; background:white; padding:25px; border-radius:20px; margin-top:15px;">
-                        <input type="text" id="new-p-name" placeholder="Mahsulot nomi">
-                        <input type="number" id="new-p-price" placeholder="Narxi">
-                        <input type="number" id="new-p-stock" placeholder="Soni">
-                        <input type="file" id="new-p-img" accept="image/*">
-                        <button class="btn btn-p" onclick="addNewProduct()">Sotuvga chiqarish</button>
-                    </div>
-                </div>
-            </section>
+        <section id="admin">
+            <div class="admin-form">
+                <h3 style="margin-bottom:20px">Yangi mahsulot qo'shish</h3>
+                <input type="text" id="p-title" placeholder="Mahsulot nomi">
+                <input type="number" id="p-price" placeholder="Narxi (so'm)">
+                <select id="p-cat">
+                    <option value="Elektronika">Elektronika</option>
+                    <option value="Kiyimlar">Kiyimlar</option>
+                    <option value="Oziq-ovqat">Oziq-ovqat</option>
+                </select>
+                <input type="file" id="p-file" accept="image/*">
+                <button class="btn-main" onclick="app.createProduct()">Bazaga yozish</button>
+            </div>
+        </section>
 
-            <section id="noti"><div id="list-noti"></div></section>
-            <section id="cart"><div id="list-cart"></div></section>
+    </main>
+
+    <nav>
+        <div class="nav-link active" onclick="app.route('shop', this)">
+            <i>🏠</i><span>Do'kon</span>
         </div>
-    </div>
+        <div class="nav-link" onclick="app.route('cart', this)" style="position:relative">
+            <i>🛒</i><span>Savat</span>
+            <div id="cart-dot" class="cart-count" style="display:none">0</div>
+        </div>
+        <div class="nav-link" onclick="app.route('admin', this)">
+            <i>🛠️</i><span>Admin</span>
+        </div>
+    </nav>
 
     <script>
-        // --- DATA STATE ---
-        let products = JSON.parse(localStorage.getItem("eb_p")) || [];
-        let favorites = JSON.parse(localStorage.getItem("eb_f")) || [];
-        let cart = JSON.parse(localStorage.getItem("eb_c")) || [];
-        let notis = JSON.parse(localStorage.getItem("eb_n")) || [];
-        let stores = JSON.parse(localStorage.getItem("eb_stores")) || {}; // { "Do'konNomi": "Parol" }
-        
-        let currentSMSKod = "";
-        let currentUser = localStorage.getItem("eb_user") || null;
-        let activeStore = null;
-        let tempImgData = null;
+        const app = {
+            tg: window.Telegram.WebApp,
+            products: JSON.parse(localStorage.getItem('eb_v3_products')) || [],
+            cart: [],
+            currentFilter: 'Barchasi',
 
-        // --- AUTH LOGIC (SMS Simulyatsiya) ---
-        if(currentUser) {
-            document.getElementById("auth-screen").style.display = "none";
-            document.getElementById("display-phone").innerText = currentUser;
-        }
+            init() {
+                this.tg.expand();
+                this.tg.enableClosingConfirmation();
+                this.renderProducts();
+            },
 
-        function sendSMSCode() {
-            const phone = document.getElementById("user-phone").value;
-            if(phone.length < 9) return alert("Raqamni to'liq kiriting!");
-            
-            currentSMSKod = Math.floor(1000 + Math.random() * 9000).toString();
-            
-            // Haqiqiy SMS o'rniga Alertda ko'rsatamiz (Simulyatsiya)
-            alert("EASY-BRING: Tasdiqlash kodingiz - " + currentSMSKod);
-            
-            document.getElementById("auth-step-1").style.display = "none";
-            document.getElementById("auth-step-2").style.display = "block";
-            document.getElementById("sms-info").innerText = phone + " raqamiga kod yuborildi.";
-        }
 
-        function verifySMS() {
-            const input = document.getElementById("sms-code-input").value;
-            if(input === currentSMSKod) {
-                currentUser = document.getElementById("user-phone").value;
-                localStorage.setItem("eb_user", currentUser);
-                document.getElementById("auth-screen").style.display = "none";
-                document.getElementById("display-phone").innerText = currentUser;
-            } else {
-                alert("Kod noto'g'ri!");
+
+            // Navigation System
+            route(id, el) {
+                document.querySelectorAll('section').forEach(s => s.classList.remove('active'));
+                document.querySelectorAll('.nav-link').forEach(n => n.classList.remove('active'));
+                document.getElementById(id).classList.add('active');
+                el.classList.add('active');
+                
+                // Hide/Show Search UI
+                document.getElementById('discovery-ui').style.display = id === 'shop' ? 'block' : 'none';
+                
+                if(id === 'cart') this.renderCart();
+                this.tg.HapticFeedback.impactOccurred('light');
+            },
+
+            // Product Logic
+            renderProducts(data = this.products) {
+                const grid = document.getElementById('product-grid');
+                grid.innerHTML = data.map(p => `
+                    <div class="product-card">
+                        <div class="price-badge">${p.price.toLocaleString()} so'm</div>
+                        <img src="${p.img || 'https://via.placeholder.com/150'}">
+                        <div style="font-size:10px; color:var(--primary); font-weight:800; margin-bottom:5px">${p.category}</div>
+                        <div style="font-weight:600; font-size:14px; margin-bottom:12px">${p.name}</div>
+                        <button class="btn-main" style="padding:10px; font-size:12px" onclick="app.addToCart(${p.id})">Savatga</button>
+                    </div>
+                `).join('');
+            },
+
+            filterCat(cat, el) {
+                document.querySelectorAll('.cat-chip').forEach(c => c.classList.remove('active'));
+                el.classList.add('active');
+                this.currentFilter = cat;
+                this.search();
+            },
+
+            search() {
+                const query = document.getElementById('search-input').value.toLowerCase();
+                const filtered = this.products.filter(p => {
+                    const matchCat = this.currentFilter === 'Barchasi' || p.category === this.currentFilter;
+                    const matchSearch = p.name.toLowerCase().includes(query);
+                    return matchCat && matchSearch;
+                });
+                this.renderProducts(filtered);
+            },
+
+            // Admin Logic
+            createProduct() {
+                const name = document.getElementById('p-title').value;
+                const price = parseInt(document.getElementById('p-price').value);
+                const category = document.getElementById('p-cat').value;
+                const file = document.getElementById('p-file').files[0];
+
+                if(!name || !price) return this.tg.showAlert("Ma'lumotlarni to'ldiring!");
+
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    const product = { id: Date.now(), name, price, category, img: e.target.result };
+                    this.products.unshift(product);
+                    localStorage.setItem('eb_v3_products', JSON.stringify(this.products));
+                    this.tg.showPopup({ title: "Muvaffaqiyatli", message: "Mahsulot bazaga qo'shildi!" });
+                    this.renderProducts();
+                    this.route('shop', document.querySelector('.nav-link'));
+                };
+                if(file) reader.readAsDataURL(file);
+                else reader.onload({target:{result:null}});
+            },
+
+            // Cart Logic
+            addToCart(id) {
+                const p = this.products.find(x => x.id === id);
+                this.cart.push(p);
+                this.updateCartBadge();
+                this.tg.HapticFeedback.notificationOccurred('success');
+            },
+
+            updateCartBadge() {
+                const dot = document.getElementById('cart-dot');
+                if(this.cart.length > 0) {
+                    dot.style.display = 'flex';
+                    dot.innerText = this.cart.length;
+                }
+            },
+
+            renderCart() {
+                const list = document.getElementBy
+
+Id('cart-list');
+                const footer = document.getElementById('cart-footer');
+                if(this.cart.length === 0) {
+                    list.innerHTML = "<p style='text-align:center; opacity:0.5; margin-top:50px'>Savat bo'sh</p>";
+                    footer.style.display = 'none';
+                    return;
+                }
+                
+                footer.style.display = 'block';
+                let total = 0;
+                list.innerHTML = this.cart.map((item, index) => {
+                    total += item.price;
+                    return `
+                        <div class="cart-item">
+                            <img src="${item.img}">
+                            <div style="flex:1">
+                                <div style="font-weight:600">${item.name}</div>
+                                <div style="color:var(--primary); font-size:13px">${item.price.toLocaleString()} so'm</div>
+                            </div>
+                            <button onclick="app.removeItem(${index})" style="background:none; border:none; color:red; font-size:20px">×</button>
+                        </div>
+                    `;
+                }).join('');
+                document.getElementById('total-price').innerText = total.toLocaleString() + " so'm";
+            },
+
+            removeItem(index) {
+                this.cart.splice(index, 1);
+                this.renderCart();
+                this.updateCartBadge();
+                if(this.cart.length === 0) document.getElementById('cart-dot').style.display = 'none';
+            },
+
+            checkout() {
+                this.tg.showConfirm("Buyurtmani tasdiqlaysizmi?", (ok) => {
+                    if(ok) {
+                        this.tg.MainButton.setText("BUYURTMA YUBORILDI ✅");
+                        this.tg.MainButton.show();
+                        setTimeout(() => this.tg.MainButton.hide(), 3000);
+                        
+                        // Telegramga ma'lumot yuborish (Haqiqiy bot uchun)
+                        const data = {
+                            user: this.tg.initDataUnsafe?.user?.first_name,
+                            items: this.cart,
+                            total: document.getElementById('total-price').innerText
+                        };
+                        this.tg.sendData(JSON.stringify(data));
+                        
+                        this.cart = [];
+                        this.renderCart();
+                        this.updateCartBadge();
+                        document.getElementById('cart-dot').style.display = 'none';
+                    }
+                });
             }
-        }
-
-// --- STORE SECURITY ---
-        function accessStore() {
-            const name = document.getElementById("store-name-input").value;
-            const pass = document.getElementById("store-pass-input").value;
-
-            if(!name || !pass) return alert("Ma'lumotlarni kiriting!");
-
-            // Agar do'kon hali yo'q bo'lsa, uni birinchi marta kiritgan odam "egasi" bo'ladi
-            if(!stores[name]) {
-                if(confirm(name + " do'koni hali ro'yxatdan o'tmagan. Uni ushbu parol bilan yarataylikmi?")) {
-                    stores[name] = pass;
-                    localStorage.setItem("eb_stores", JSON.stringify(stores));
-                } else return;
-            }
-
-            // Parolni tekshirish
-            if(stores[name] === pass) {
-                activeStore = name;
-                document.getElementById("store-login-form").style.display = "none";
-                document.getElementById("store-panel").style.display = "block";
-                document.getElementById("current-store-title").innerText = "🏪 " + name + " boshqaruv paneli";
-            } else {
-                alert("Ushbu do'kon uchun parol noto'g'ri!");
-            }
-        }
-
-        // --- CORE FUNCTIONS ---
-        function changeTab(id) {
-            document.querySelectorAll("section").forEach(s => s.classList.remove("active"));
-            document.querySelectorAll(".sidebar button").forEach(b => b.classList.remove("active"));
-            document.getElementById(id).classList.add("active");
-            document.getElementById("btn-"+id).classList.add("active");
-            document.getElementById("tab-title").innerText = id === 'shop' ? "Asosiy Do'kon" : (id === 'admin' ? "Boshqaruv" : "Easy-Bring");
-
-            if(id === 'shop') renderProducts(products, 'grid-shop');
-            if(id === 'fav') renderProducts(products.filter(p => favorites.includes(p.id)), 'grid-fav');
-            if(id === 'noti') renderNotis();
-            if(id === 'cart') renderCart();
-        }
-
-        document.getElementById("new-p-img").onchange = (e) => {
-            let fr = new FileReader();
-            fr.onload = () => tempImgData = fr.result;
-            fr.readAsDataURL(e.target.files[0]);
         };
 
-        function addNewProduct() {
-            const n = document.getElementById("new-p-name").value;
-            const p = parseInt(document.getElementById("new-p-price").value);
-            const s = parseInt(document.getElementById("new-p-stock").value);
-            if(!n || !p) return alert("To'ldiring!");
-
-            products.push({ id: Date.now(), name: n, price: p, stock: s, store: activeStore, img: tempImgData || 'https://via.placeholder.com/200' });
-            localStorage.setItem("eb_p", JSON.stringify(products));
-            alert("Mahsulot do'konga qo'shildi!");
-            location.reload();
-        }
-
-        function renderProducts(data, gridId) {
-            const grid = document.getElementById(gridId);
-            grid.innerHTML = data.map(p => {
-                const isOut = p.stock <= 0;
-                const isFav = favorites.includes(p.id);
-                return `
-                    <div class="product-card">
-                        <span onclick="toggleFav(${p.id})" style="position:absolute; top:10px; right:10px; cursor:pointer; font-size:20px; color:${isFav?'#ffc107':'#ccc'}">★</span>
-                        <img src="${p.img}">
-                        <div style="font-weight:600; margin-top:10px;">${p.name}</div>
-                        <div style="font-size:11px; color:var(--primary)">Sotuvchi: ${p.store}</div>
-                        <div style="font-size:12px; color:${isOut?'red':'green'}">${isOut?'Tugagan':'Zaxira: '+p.stock}</div>
-                        <div style="text-decoration:line-through; font-size:12px; color:#999">${(p.price*1.3).toLocaleString()} so'm</div>
-
-<div style="font-weight:700; font-size:16px;">${p.price.toLocaleString()} so'm</div>
-                        <button class="btn btn-p" onclick="${isOut ? sendEBNoti(${p.id}) : addToEBCart(${p.id})}" ${isOut?'style="background:#eee;color:#999"':''}>
-                            ${isOut ? 'So\'rov qoldirish' : 'Savatga'}
-                        </button>
-                    </div>
-                `;
-            }).join('') || "Mahsulotlar yo'q";
-        }
-
-        function addToEBCart(id) {
-            const p = products.find(x => x.id === id);
-            p.stock--;
-            cart.push({...p, cartId: Date.now()});
-            saveData();
-            renderProducts(products, 'grid-shop');
-            updateBadges();
-        }
-
-        function sendEBNoti(id) {
-            const p = products.find(x => x.id === id);
-            const msg = Sizning <b>"${p.name}"</b> mahsulotingizga <b>${new Date().toLocaleDateString()}</b> kuni yangi buyurtma so'rovi keldi.;
-            notis.unshift({ text: msg, store: p.store });
-            localStorage.setItem("eb_n", JSON.stringify(notis));
-            alert("Sotuvchiga so'rov yuborildi!");
-        }
-
-        function toggleFav(id) {
-            if(favorites.includes(id)) favorites = favorites.filter(x => x !== id);
-            else favorites.push(id);
-            localStorage.setItem("eb_f", JSON.stringify(favorites));
-            changeTab(document.querySelector("section.active").id);
-        }
-
-        function renderNotis() {
-            const box = document.getElementById("list-noti");
-            // Sotuvchi faqat o'z do'koniga tegishli xabarlarni ko'radi
-            if(!activeStore) return box.innerHTML = "<p>Xabarlarni ko'rish uchun Do'kon Boshqaruvidan tizimga kiring.</p>";
-            const myNotis = notis.filter(n => n.store === activeStore);
-            box.innerHTML = myNotis.map(n => <div style="background:white; padding:15px; border-radius:12px; margin-bottom:10px; border-left:4px solid var(--primary)">${n.text}</div>).join('') || "Sizda bildirishnomalar yo'q.";
-        }
-
-        function renderCart() {
-            const box = document.getElementById("list-cart");
-            let total = 0;
-            box.innerHTML = cart.map(item => {
-                total += item.price;
-                return <div style="background:white; padding:10px; border-radius:10px; margin-bottom:5px; display:flex; justify-content:space-between;"><span>${item.name}</span><b>${item.price.toLocaleString()} so'm</b></div>;
-            }).join('') || "Savat bo'sh";
-            if(cart.length) box.innerHTML += <div style="margin-top:20px; font-weight:700">Jami: ${total.toLocaleString()} so'm</div><button class="btn btn-p" onclick="alert('Xarid yakunlandi!')">Rasmiylashtirish</button>;
-        }
-
-        function saveData() {
-            localStorage.setItem("eb_p", JSON.stringify(products));
-            localStorage.setItem("eb_c", JSON.stringify(cart));
-        }
-
-        function updateBadges() {
-            document.getElementById("cart-cnt").innerText = cart.length;
-        }
-
-        // Init
-        renderProducts(products, 'grid-shop');
-        updateBadges();
+        app.init();
     </script>
 </body>
 </html>
