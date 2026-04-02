@@ -8,9 +8,9 @@
 <!-- Telegram Web App JS -->
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
 
-<!-- Firebase JS SDK -->
-<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js"></script>
+<!-- Firebase compat SDK (404 xatosiz ishlashi uchun) -->
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
 
 <style>
 body{margin:0;font-family:sans-serif;background:#f5f6fa}
@@ -33,7 +33,7 @@ button{background:#6a00ff;color:#fff;font-weight:700;cursor:pointer;border:none}
 <div id="adminPanel" class="admin" style="display:none">
 <h3>Admin Panel</h3>
 <input id="pname" placeholder="Mahsulot nomi">
-<input id="pprice" placeholder="Narxi">
+<input id="pprice" type="number" placeholder="Narxi">
 <input id="pimg" placeholder="Rasm URL">
 <button onclick="app.addProduct()">Qo‘shish</button>
 
@@ -63,7 +63,7 @@ const db = firebase.firestore(appF);
 
 // 🤖 TELEGRAM BOT
 const TOKEN = "YOUR_BOT_TOKEN";
-const CHAT_ID = "YOUR_CHAT_ID";
+const CHAT_ID = "YOUR_CHAT_ID"; // bu yerga bot yuboradigan chat id
 
 window.app = {
 db: [],
@@ -76,11 +76,12 @@ init() {
     tg.expand();
 
     // TG User Info
-    const tgUser = tg.initDataUnsafe.user;
+    const tgUser = tg.initDataUnsafe?.user;
+    if(!tgUser){ alert("Mini App faqat Telegram ichida ishlaydi!"); return; }
     this.user = tgUser;
-    this.role = (tgUser.id === 123456789) ? "admin" : "user"; // Admin ID o'zgartir
 
-    // Admin panelni ko'rsat
+    // Admin bo'lish uchun TG ID ni kiriting
+    this.role = (tgUser.id === 123456789) ? "admin" : "user";
     if(this.role === "admin") document.getElementById('adminPanel').style.display = "block";
 
     // Firestore ga user info saqlash
@@ -94,11 +95,11 @@ init() {
     if(this.role === "admin") this.loadOrders();
 },
 
-// 📦 PRODUCTS
+// 📦 MAHSULOT QO‘SHISH (ADMIN)
 addProduct(){
-    const name = document.getElementById('pname').value;
+    const name = document.getElementById('pname').value.trim();
     const price = Number(document.getElementById('pprice').value);
-    const img = document.getElementById('pimg').value || 'https://via.placeholder.com/150';
+    const img = document.getElementById('pimg').value.trim() || 'https://via.placeholder.com/150';
 
     if(!name || !price) return alert("Ma'lumotlarni to'ldiring!");
 
@@ -109,57 +110,63 @@ addProduct(){
         document.getElementById('pprice').value="";
         document.getElementById('pimg').value="";
         this.loadProducts();
-    });
+    })
+    .catch(e => alert("Xato: "+e));
 },
 
+// 🔄 MAHSULOTLARNI YUKLASH
 loadProducts(){
     db.collection("products").get().then((snap) => {
         this.db = [];
         snap.forEach(d => this.db.push({id:d.id,...d.data()}));
-        this.render();
+        this.renderProducts();
     });
 },
 
-render(){
+renderProducts(){
     const shop = document.getElementById('shop');
+    if(this.db.length===0){ shop.innerHTML="<p style='grid-column:1/3;text-align:center'>Mahsulot yo'q</p>"; return; }
+
     shop.innerHTML = this.db.map(x => `
         <div class="card">
             <img src="${x.img}" width="100%">
             <b>${x.name}</b><br>
-            ${x.price} so'm<br>
+            ${x.price.toLocaleString()} so'm<br>
             <button onclick="app.addToCart('${x.id}')">Savatga</button>
         </div>
     `).join("");
 },
 
+// 🛒 SAVAT
 addToCart(id){
-    const item = this.db.find(x => x.id === id);
-    const exist = this.cart.find(x => x.id === id);
+    const item = this.db.find(x=>x.id===id);
+    const exist = this.cart.find(x=>x.id===id);
     if(exist) exist.qty++;
     else this.cart.push({...item, qty:1});
     alert("Savatga qo‘shildi!");
 },
 
-// 🛒 CHECKOUT + TELEGRAM
+// 🏁 CHECKOUT + TELEGRAM BOT
 checkout(){
-    if(this.cart.length === 0) {alert("Savat bo‘sh!"); return;}
+    if(this.cart.length===0){ alert("Savat bo'sh!"); return; }
 
     let total = 0;
-    this.cart.forEach(x => total += x.price * x.qty);
+    this.cart.forEach(x=>total += x.price*x.qty);
 
     const order = {
         user: {id:this.user.id, name:this.user.first_name, username:this.user.username},
         items: this.cart,
         total,
-        status: "pending",
-        time: new Date().toLocaleString()
+        status:"pending",
+        time:new Date().toLocaleString()
     };
 
     db.collection("orders").add(order);
 
+    // Telegram botga yuborish
     fetch(`https://api.telegram.org/bot${TOKEN}/sendMessage`, {
-        method: "POST",
-        headers: {"Content-Type":"application/json"},
+        method:"POST",
+        headers:{"Content-Type":"application/json"},
         body: JSON.stringify({chat_id: CHAT_ID, text: JSON.stringify(order, null, 2)})
     });
 
@@ -169,16 +176,17 @@ checkout(){
 
 // 📑 ADMIN ORDERS
 loadOrders(){
-    db.collection("orders").get().then((snap) => {
+    db.collection("orders").get().then((snap)=>{
         const ordersDiv = document.getElementById('orders');
-        ordersDiv.innerHTML = "";
-        snap.forEach(d => {
+        ordersDiv.innerHTML="";
+        snap.forEach(d=>{
             const o = d.data();
             ordersDiv.innerHTML += `
             <div class="order">
                 <b>${o.user.name}</b><br>
-                ${o.total} so'm<br>
+                ${o.total.toLocaleString()} so'm<br>
                 Status: ${o.status}<br>
+                ${o.time}<br>
             </div>`;
         });
     });
