@@ -1,230 +1,205 @@
 <!DOCTYPE html>
 <html lang="uz">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Easy-Bring | Direct Edition</title>
-    <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
-    <style>
-        :root { --primary: #7000ff; --bg: #f8f9fc; --text: #1a1a1a; }
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', sans-serif; -webkit-tap-highlight-color: transparent; }
-        
-        body { background: var(--bg); color: var(--text); height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EasyBring FULL PRO</title>
 
-        /* --- Header --- */
-        header { 
-            background: white; 
-            padding: 15px 20px; 
-            display: flex; 
-            justify-content: space-between; 
-            align-items: center; 
-            border-bottom: 1px solid #eee;
-            position: sticky; top: 0; z-index: 100;
-        }
-        .logo { font-size: 22px; font-weight: 800; color: var(--primary); letter-spacing: -1px; }
-        .user-tag { font-size: 12px; font-weight: 600; color: #666; background: #eee; padding: 4px 10px; border-radius: 20px; }
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
 
-        /* --- Content Area --- */
-        .content { flex: 1; overflow-y: auto; padding: 15px; padding-bottom: 90px; }
-        section { display: none; animation: fadeIn 0.4s ease; }
-        section.active { display: block; }
-
-        /* --- Product Grid --- */
-        .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
-        .card { background: white; border-radius: 20px; padding: 10px; border: 1px solid #eee; position: relative; transition: 0.2s; }
-        .card:active { transform: scale(0.96); }
-        .card img { width: 100%; height: 130px; object-fit: cover; border-radius: 15px; margin-bottom: 8px; }
-        .card-price { font-weight: 800; color: var(--primary); font-size: 15px; margin-bottom: 5px; }
-        .card-title { font-size: 13px; font-weight: 600; margin-bottom: 8px; color: #333; height: 32px; overflow: hidden; }
-
-        /* --- Buttons --- */
-        .btn { width: 100%; padding: 10px; border: none; border-radius: 12px; font-weight: 700; cursor: pointer; transition: 0.2s; font-size: 12px; }
-        .btn-p { background: var(--primary); color: white; }
-        .btn-p:active { opacity: 0.8; }
-
-        /* --- Admin Form --- */
-        .admin-box { background: white; padding: 20px; border-radius: 24px; border: 1px solid #eee; }
-        input { width: 100%; padding: 14px; border: 1px solid #eee; border-radius: 12px; margin-bottom: 10px; outline: none; background: #fdfdfd; }
-        input:focus { border-color: var(--primary); }
-
-        /* --- Bottom Nav --- */
-        nav { 
-            position: fixed; bottom: 0; left: 0; right: 0; 
-            height: 70px; background: white; border-top: 1px solid #eee; 
-            display: flex; justify-content: space-around; align-items: center; z-index: 1000; 
-        }
-        .nav-btn { display: flex; flex-direction: column; align-items: center; color: #aaa; cursor: pointer; font-size: 10px; font-weight: 600; }
-        .nav-btn.active { color: var(--primary); }
-        .nav-btn i { font-size: 22px; margin-bottom: 3px; font-style: normal; }
-
-        .badge { position: absolute; top: -5px; right: -8px; background: red; color: white; font-size: 9px; padding: 2px 6px; border-radius: 10px; }
-
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-    </style>
+<style>
+body{margin:0;font-family:sans-serif;background:#f5f6fa}
+header{padding:15px;background:#fff;text-align:center;font-weight:800}
+input{width:100%;padding:10px;margin:5px 0;border-radius:10px;border:1px solid #ddd}
+button{padding:10px;border:none;border-radius:10px;background:#6a00ff;color:#fff;font-weight:700;width:100%}
+.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;padding:10px}
+.card{background:#fff;padding:10px;border-radius:10px}
+.admin{background:#fff;padding:10px;margin:10px;border-radius:10px}
+.order{background:#fff;margin:10px;padding:10px;border-radius:10px}
+</style>
 </head>
+
 <body>
 
-    <header>
-        <div class="logo">EasyBring</div>
-        <div id="u-name" class="user-tag">Mehmon</div>
-    </header>
+<header>EasyBring PRO 🚀</header>
 
-    <div class="content">
-        <section id="s-shop" class="active">
-            <h3 style="margin-bottom:15px">Mahsulotlar</h3>
-            <div id="grid-p" class="grid"></div>
-        </section>
+<!-- AUTH -->
+<div id="auth">
+<h3>Kirish / Ro‘yxatdan o‘tish</h3>
+<input id="email" placeholder="Email">
+<input id="pass" type="password" placeholder="Parol">
+<button onclick="app.register()">Ro‘yxatdan o‘tish</button>
+<button onclick="app.login()">Kirish</button>
+</div>
 
-        <section id="s-cart">
-            <h3 style="margin-bottom:15px">Savatingiz</h3>
-            <div id="cart-list"></div>
-            <div id="cart-res" style="display:none; margin-top:20px; padding:20px; background:white; border-radius:20px;">
-                <div style="display:flex; justify-content:space-between; margin-bottom:15px">
-                    <span style="font-weight:600">Jami:</span>
-                    <span id="total-price" style="font-weight:800; color:var(--primary)">0 so'm</span>
-                </div>
-                <button class="btn btn-p" onclick="app.checkout()" style="padding:15px">Buyurtma berish</button>
-            </div>
-        </section>
+<!-- MAIN APP -->
+<div id="app" style="display:none">
 
-        <section id="s-admin">
-            <div class="admin-box">
-                <h3 style="margin-bottom:15px">Yangi mahsulot</h3>
-                <input type="text" id="in-name" placeholder="Nomi">
-                <input type="number" id="in-price" placeholder="Narxi">
-                <div style="font-size:11px; color:#999; margin-bottom:5px">Rasm tanlang:</div>
-                <input type="file" id="in-img" accept="image/*" style="border:none">
-                <button class="btn btn-p" onclick="app.addProduct()">Qo'shish</button>
-            </div>
-        </section>
-    </div>
+<!-- ADMIN PANEL -->
+<div id="adminPanel" style="display:none" class="admin">
+<h3>Admin Panel</h3>
+<input id="pname" placeholder="Mahsulot nomi">
+<input id="pprice" placeholder="Narxi">
+<input id="pimg" placeholder="Rasm URL">
+<button onclick="app.addProduct()">Qo‘shish</button>
 
-    <nav>
-        <div class="nav-btn active" onclick="app.nav('s-shop', this)"><i>🏠</i><span>Do'kon</span></div>
-        <div class="nav-btn" onclick="app.nav('s-cart', this)" style="position:relative">
-            <i>🛒</i><span>Savat</span>
-            <div id="c-badge" class="badge" style="display:none">0</div>
+<h3>Buyurtmalar</h3>
+<div id="orders"></div>
+</div>
+
+<!-- SHOP GRID -->
+<div id="shop" class="grid"></div>
+
+<!-- CHECKOUT -->
+<button onclick="app.checkout()">Buyurtma berish</button>
+
+</div>
+
+<script type="module">
+
+// 🔥 FIREBASE
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+import { getFirestore, collection, addDoc, getDocs, updateDoc, doc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+
+// 🔑 FIREBASE CONFIG
+const firebaseConfig = {
+  apiKey: "YOUR_API_KEY",
+  authDomain: "YOUR_PROJECT.firebaseapp.com",
+  projectId: "YOUR_PROJECT_ID"
+};
+
+const appF = initializeApp(firebaseConfig);
+const db = getFirestore(appF);
+const auth = getAuth(appF);
+
+// 🤖 TELEGRAM BOT
+const TOKEN = "YOUR_BOT_TOKEN";
+const CHAT_ID = "YOUR_CHAT_ID";
+
+// 🚀 APP
+window.app = {
+
+db: [],
+cart: [],
+user: null,
+role: "user",
+
+// 🔐 REGISTER
+async register(){
+    const e = email.value;
+    const p = pass.value;
+    await createUserWithEmailAndPassword(auth, e, p);
+    alert("Ro‘yxatdan o‘tildi!");
+},
+
+// 🔐 LOGIN
+async login(){
+    const e = email.value;
+    const p = pass.value;
+    const res = await signInWithEmailAndPassword(auth, e, p);
+    this.user = res.user;
+
+    if(e === "admin@gmail.com") this.role = "admin";
+
+    auth.style.display = "none";
+    app.style.display = "block";
+
+    if(this.role === "admin") adminPanel.style.display = "block";
+
+    this.loadProducts();
+    if(this.role === "admin") this.loadOrders();
+},
+
+// 📦 PRODUCTS
+async addProduct(){
+    await addDoc(collection(db, "products"), {
+        name: pname.value,
+        price: Number(pprice.value),
+        img: pimg.value
+    });
+    alert("Mahsulot qo‘shildi!");
+    this.loadProducts();
+},
+
+async loadProducts(){
+    const snap = await getDocs(collection(db, "products"));
+    this.db = [];
+    snap.forEach(d => this.db.push({id: d.id, ...d.data()}));
+    this.render();
+},
+
+render(){
+    shop.innerHTML = this.db.map(x => `
+        <div class="card">
+            <img src="${x.img}" width="100%">
+            <b>${x.name}</b><br>
+            ${x.price} so'm<br>
+            <button onclick="app.add('${x.id}')">Savatga</button>
         </div>
-        <div class="nav-btn" onclick="app.nav('s-admin', this)"><i>⚙️</i><span>Admin</span></div>
-    </nav>
+    `).join("");
+},
 
-    <script>
-        const tg = window.Telegram.WebApp;
+add(id){
+    const item = this.db.find(x => x.id === id);
+    const exist = this.cart.find(x => x.id === id);
+    if(exist) exist.qty++;
+    else this.cart.push({...item, qty:1});
+    alert("Savatga qo‘shildi!");
+},
 
-        const app = {
-            db: JSON.parse(localStorage.getItem('eb_v5')) || [],
-            cart: [],
-            imgCache: null,
+// 🛒 CHECKOUT + TELEGRAM
+async checkout(){
+    if(this.cart.length === 0){alert("Savat bo‘sh!"); return;}
 
-            init() {
-                tg.expand();
-                document.getElementById('u-name').innerText = tg.initDataUnsafe?.user?.first_name || "Foydalanuvchi";
-                
-                // Rasm yuklashni kuzatish
-                document.getElementById('in-img').onchange = (e) => {
-                    const fr = new FileReader();
-                    fr.onload = () => app.imgCache = fr.result;
-                    fr.readAsDataURL(e.target.files[0]);
-                };
+    let total = 0;
+    this.cart.forEach(x => total += x.price * x.qty);
 
-                this.render();
-            },
+    const order = {
+        user: this.user.email,
+        items: this.cart,
+        total,
+        status: "pending",
+        time: new Date().toLocaleString()
+    };
 
-            nav(id, el) {
-                document.querySelectorAll('section').forEach(s => s.classList.remove('active'));
-                document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-                document.getElementById(id).classList.add('active');
-                el.classList.add('active');
-                if(id === 's-cart') this.renderCart();
-                tg.HapticFeedback.impactOccurred('light');
-            },
+    await addDoc(collection(db, "orders"), order);
 
-            addProduct() {
-                const n = document.getElementById('in-name').value;
-                const p = document.getElementById('in-price').value;
-                if(!n || !p) return tg.showAlert("Ma'lumotni to'ldiring");
+    fetch(`https://api.telegram.org/bot${TOKEN}/sendMessage`, {
+        method: "POST",
+        headers: {"Content-Type":"application/json"},
+        body: JSON.stringify({chat_id: CHAT_ID, text: JSON.stringify(order, null, 2)})
+    });
 
-                const newItem = { id: Date.now(), name: n, price: parseInt(p), img: app.imgCache || 'https://via.placeholder.com/150' };
-                this.db.unshift(newItem);
-                localStorage.setItem('eb_v5', JSON.stringify(this.db));
-                
-                // Formani tozalash
-                document.getElementById('in-name').value = '';
-                document.getElementById('in-price').value = '';
-                app.imgCache = null;
+    alert("Buyurtma yuborildi!");
+    this.cart = [];
+},
 
-                tg.showPopup({ message: "Mahsulot qo'shildi!" });
-                this.render();
-                this.nav('s-shop', document.querySelectorAll('.nav-btn')[0]);
-            },
+// 📑 ADMIN ORDERS
+async loadOrders(){
+    const snap = await getDocs(collection(db, "orders"));
+    orders.innerHTML = "";
+    snap.forEach(d => {
+        const o = d.data();
+        orders.innerHTML += `
+        <div class="order">
+            <b>${o.user}</b><br>
+            ${o.total} so'm<br>
+            Status: ${o.status}<br>
+            <button onclick="app.updateStatus('${d.id}','accepted')">Tasdiqlash</button>
+            <button onclick="app.updateStatus('${d.id}','delivered')">Yetkazildi</button>
+        </div>`;
+    });
+},
 
-            render() {
-                const grid = document.getElementById('grid-p');
-                grid.innerHTML = this.db.map(x => `
-                    <div class="card">
-                        <img src="${x.img}">
-                        <div class="card-price">${x.price.toLocaleString()} so'm</div>
-                        <div class="card-title">${x.name}</div>
-                        <button class="btn btn-p" onclick="app.addToCart(${x.id})">Savatga</button>
-                    </div>
-                `).join('') || `<p style="grid-column:1/3; text-align:center; padding:50px; opacity:0.5">Mahsulotlar yo'q</p>`;
-            },
+async updateStatus(id, status){
+    await updateDoc(doc(db, "orders", id), {status});
+    this.loadOrders();
+}
 
-            addToCart(id) {
-                const item = this.db.find(x => x.id === id);
-                this.cart.push({...item, cartId: Date.now()});
-                this.updateBadge();
-                tg.HapticFeedback.notificationOccurred('success');
-            },
+};
 
-            updateBadge() {
-                const b = document.getElementById('c-badge');
-                if(this.cart.length > 0) { b.style.display = 'block'; b.innerText = this.cart.length; }
-            },
-
-            renderCart() {
-                const list = document.getElementById('cart-list');
-                const res = document.getElementById('cart-res');
-                if(this.cart.length === 0) {
-                    list.innerHTML = "<p style='text-align:center; padding:50px; opacity:0.5'>Savat bo'sh</p>";
-                    res.style.display = 'none';
-                    return;
-                }
-                res.style.display = 'block';
-                let total = 0;
-                list.innerHTML = this.cart.map(i => {
-                    total += i.price;
-                    return `<div style="background:white; padding:15px; border-radius:15px; margin-bottom:10px; display:flex; justify-content:space-between; align-items:center; border:1px solid #eee">
-                        <div><b>${i.name}</b><br><span style="color:var(--primary); font-size:12px">${i.price.toLocaleString()} so'm</span></div>
-                        <button onclick="app.removeCart(${i.cartId})" style="border:none; background:none; font-size:20px">🗑️</button>
-                    </div>`;
-                }).join('');
-                document.getElementById('total-price').innerText = total.toLocaleString() + " so'm";
-            },
-
-            removeCart(cid) {
-                this.cart = this.cart.filter(x => x.cartId !== cid);
-                this.renderCart();
-                this.updateBadge();
-                if(this.cart.length === 0) document.getElementById('c-badge').style.display = 'none';
-            },
-
-            checkout() {
-                tg.showConfirm("Buyurtmani tasdiqlaysizmi?", (ok) => {
-                    if(ok) {
-                        tg.showAlert("Rahmat! Buyurtma qabul qilindi.");
-                        this.cart = [];
-                        this.updateBadge();
-                        document.getElementById('c-badge').style.display = 'none';
-                        this.nav('s-shop', document.querySelectorAll('.nav-btn')[0]);
-                    }
-                });
-            }
-        };
-
-        app.init();
-    </script>
+</script>
 </body>
 </html>
  
