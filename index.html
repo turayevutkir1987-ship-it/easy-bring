@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EasyBring APP</title>
+
+<!-- Firebase -->
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+
+<style>
+body{margin:0;font-family:sans-serif;background:#f5f6fa}
+header{padding:15px;background:#fff;text-align:center;font-weight:800}
+.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;padding:10px}
+.card{background:#fff;padding:10px;border-radius:10px}
+button,input{width:100%;padding:10px;margin:5px 0;border-radius:10px;border:1px solid #ddd}
+button{background:#6a00ff;color:#fff;font-weight:700;border:none}
+.admin{background:#fff;padding:10px;margin:10px;border-radius:10px}
+.cart{background:#fff;margin:10px;padding:10px;border-radius:10px}
+</style>
+</head>
+
+<body>
+
+<header>EasyBring APP 🚀</header>
+
+<!-- ADMIN -->
+<div id="admin" class="admin" style="display:none">
+<h3>Admin Panel</h3>
+<input id="name" placeholder="Mahsulot nomi">
+<input id="price" type="number" placeholder="Narxi">
+<input id="img" placeholder="Rasm URL">
+<button onclick="app.addProduct()">Qo‘shish</button>
+</div>
+
+<!-- SHOP -->
+<div id="shop" class="grid"></div>
+
+<!-- CART -->
+<div id="cart" class="cart"></div>
+
+<button onclick="app.checkout()">Buyurtma berish</button>
+
+<script>
+
+// 🔑 FIREBASE
+const firebaseConfig = {
+  apiKey: "YOUR_API_KEY",
+  authDomain: "YOUR_PROJECT.firebaseapp.com",
+  projectId: "YOUR_PROJECT_ID"
+};
+
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
+
+// 🤖 TELEGRAM BOT (ixtiyoriy)
+const TOKEN = "YOUR_BOT_TOKEN";
+const CHAT_ID = "YOUR_CHAT_ID";
+
+// 🚀 APP
+const app = {
+
+products: [],
+cart: [],
+user: null,
+isAdmin: false,
+
+init(){
+
+// USER (Telegram yo‘q)
+this.user = {
+id: localStorage.getItem("uid") || Date.now(),
+name: localStorage.getItem("name") || "Guest"
+};
+
+// Saqlab qo'yamiz
+localStorage.setItem("uid", this.user.id);
+
+// ADMIN (o‘zing belgilaysan)
+if(this.user.id == 1111){
+this.isAdmin = true;
+document.getElementById("admin").style.display = "block";
+}
+
+this.loadProducts();
+
+},
+
+// 📦 PRODUCTS
+addProduct(){
+
+let name = document.getElementById("name").value;
+let price = Number(document.getElementById("price").value);
+let img = document.getElementById("img").value || "https://via.placeholder.com/150";
+
+if(!name || !price) return alert("To'ldir!");
+
+db.collection("products").add({name,price,img})
+.then(()=>{
+alert("Qo‘shildi!");
+this.loadProducts();
+});
+
+},
+
+loadProducts(){
+
+db.collection("products").get().then(snap=>{
+this.products=[];
+snap.forEach(d=>{
+this.products.push({id:d.id,...d.data()});
+});
+this.render();
+});
+
+},
+
+render(){
+
+const shop = document.getElementById("shop");
+
+shop.innerHTML = this.products.map(p=>`
+<div class="card">
+<img src="${p.img}" width="100%">
+<b>${p.name}</b><br>
+${p.price} so'm<br>
+<button onclick="app.addCart('${p.id}')">Savatga</button>
+</div>
+`).join("");
+
+},
+
+// 🛒 CART
+addCart(id){
+
+let item = this.products.find(x=>x.id==id);
+let exist = this.cart.find(x=>x.id==id);
+
+if(exist) exist.qty++;
+else this.cart.push({...item, qty:1});
+
+this.renderCart();
+
+},
+
+renderCart(){
+
+const div = document.getElementById("cart");
+
+if(this.cart.length==0){
+div.innerHTML="Savat bo‘sh";
+return;
+}
+
+let total=0;
+
+div.innerHTML = this.cart.map(c=>{
+total+=c.price*c.qty;
+return `<div>${c.name} x${c.qty}</div>`;
+}).join("");
+
+div.innerHTML += `<b>Jami: ${total} so'm</b>`;
+
+},
+
+// 📤 CHECKOUT
+checkout(){
+
+if(this.cart.length==0){
+alert("Savat bo‘sh!");
+return;
+}
+
+let total=0;
+this.cart.forEach(x=> total+=x.price*x.qty);
+
+const order={
+user:this.user,
+items:this.cart,
+total,
+time:new Date().toLocaleString()
+};
+
+db.collection("orders").add(order);
+
+// Telegramga yuborish (optional)
+fetch(`https://api.telegram.org/bot${TOKEN}/sendMessage`,{
+method:"POST",
+headers:{"Content-Type":"application/json"},
+body:JSON.stringify({
+chat_id: CHAT_ID,
+text: JSON.stringify(order,null,2)
+})
+});
+
+alert("Buyurtma yuborildi!");
+this.cart=[];
+this.renderCart();
+
+}
+
+};
+
+app.init();
+
+</script>
+
+</body>
+</html>
