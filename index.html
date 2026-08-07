@@ -1,210 +1,422 @@
 <!DOCTYPE html>
 <html lang="uz">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>EasyBring APP</title>
-
-<!-- Firebase -->
-<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
-
-<style>
-body{margin:0;font-family:sans-serif;background:#f5f6fa}
-header{padding:15px;background:#fff;text-align:center;font-weight:800}
-.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;padding:10px}
-.card{background:#fff;padding:10px;border-radius:10px}
-button,input{width:100%;padding:10px;margin:5px 0;border-radius:10px;border:1px solid #ddd}
-button{background:#6a00ff;color:#fff;font-weight:700;border:none}
-.admin{background:#fff;padding:10px;margin:10px;border-radius:10px}
-.cart{background:#fff;margin:10px;padding:10px;border-radius:10px}
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EasyBring AI - Aqlli Yetkazib Berish</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #f4f7f6;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      margin: 0;
+      padding: 15px;
+    }
+    .card {
+      background: #ffffff;
+      padding: 25px;
+      border-radius: 12px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+      width: 100%;
+      max-width: 420px;
+      box-sizing: border-box;
+    }
+    h2 {
+      text-align: center;
+      color: #0088cc;
+      margin-top: 0;
+      margin-bottom: 20px;
+    }
+    .section-title {
+      font-weight: bold;
+      color: #333;
+      margin-top: 15px;
+      margin-bottom: 8px;
+      font-size: 15px;
+      border-bottom: 1px solid #eee;
+      padding-bottom: 4px;
+    }
+    .row {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+    select, input {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      box-sizing: border-box;
+      font-size: 14px;
+      background-color: #fff;
+    }
+    button {
+      width: 100%;
+      padding: 12px;
+      background-color: #0088cc;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      margin-top: 15px;
+    }
+    button:hover {
+      background-color: #006699;
+    }
+    #result {
+      margin-top: 15px;
+      padding: 12px;
+      background: #eef9ff;
+      border-left: 4px solid #0088cc;
+      border-radius: 6px;
+      display: none;
+    }
+  </style>
 </head>
-
 <body>
 
-<header>EasyBring APP 🚀</header>
+  <div class="card">
+    <h2>🚚 EasyBring AI</h2>
+    
+    <!-- QAYERDAN (OLISH) -->
+    <div class="section-title">📍 Qayerdan (Olish):</div>
+    <div class="row">
+      <select id="pickupRegion" onchange="updateDistricts('pickupRegion', 'pickupDistrict')">
+        <option value="">Viloyatni tanlang</option>
+        <option value="Toshkent shahri">Toshkent shahri</option>
+        <option value="Toshkent viloyati">Toshkent viloyati</option>
+        <option value="Navoiy">Navoiy viloyati</option>
+        <option value="Samarqand">Samarqand viloyati</option>
+        <option value="Buxoro">Buxoro viloyati</option>
+        <option value="Andijon">Andijon viloyati</option>
+        <option value="Farg'ona">Farg'ona viloyati</option>
+        <option value="Namangan">Namangan viloyati</option>
+      </select>
 
-<!-- ADMIN -->
-<div id="admin" class="admin" style="display:none">
-<h3>Admin Panel</h3>
-<input id="name" placeholder="Mahsulot nomi">
-<input id="price" type="number" placeholder="Narxi">
-<input id="img" placeholder="Rasm URL">
-<button onclick="app.addProduct()">Qo‘shish</button>
-</div>
+      <select id="pickupDistrict">
+        <option value="">Tuman tanlang</option>
+      </select>
+    </div>
 
-<!-- SHOP -->
-<div id="shop" class="grid"></div>
+    <!-- QAYERGA (TOPSHIRISH) -->
+    <div class="section-title">🏁 Qayerga (Topshirish):</div>
+    <div class="row">
+      <select id="dropoffRegion" onchange="updateDistricts('dropoffRegion', 'dropoffDistrict')">
+        <option value="">Viloyatni tanlang</option>
+        <option value="Toshkent shahri">Toshkent shahri</option>
+        <option value="Toshkent viloyati">Toshkent viloyati</option>
+        <option value="Navoiy">Navoiy viloyati</option>
+        <option value="Samarqand">Samarqand viloyati</option>
+        <option value="Buxoro">Buxoro viloyati</option>
+        <option value="Andijon">Andijon viloyati</option>
+        <option value="Farg'ona">Farg'ona viloyati</option>
+        <option value="Namangan">Namangan viloyati</option>
+      </select>
 
-<!-- CART -->
-<div id="cart" class="cart"></div>
+      <select id="dropoffDistrict">
+        <option value="">Tuman tanlang</option>
+      </select>
+    </div>
 
-<button onclick="app.checkout()">Buyurtma berish</button>
+    <!-- YUK NOMI -->
+    <div class="section-title">📦 Yuk nomi:</div>
+    <input type="text" id="item" placeholder="Masalan: Hujjat, Noutbuk, Kiyim...">
 
-<script>
+    <button onclick="sendOrder()">Hisoblash</button>
 
-// 🔑 FIREBASE
-const firebaseConfig = {
-  apiKey: "YOUR_API_KEY",
-  authDomain: "YOUR_PROJECT.firebaseapp.com",
-  projectId: "YOUR_PROJECT_ID"
-};
+    <div id="result"></div>
+  </div>
 
-firebase.initializeApp(firebaseConfig);
-const db = firebase.firestore();
+  <!-- JAVASCRIPT MANTIQLARI -->
+  <script>
+    // Viloyat va tumanlar ma'lumotlar bazasi
+    const districtsData = {
+      "Toshkent shahri": ["Chilonzor", "Yunusobod", "Mirzo Ulug'bek", "Yakkasaroy", "Mirobod", "Olmazor", "Sergeli"],
+      "Toshkent viloyati": ["Zangiota", "Qibray", "Chirchiq", "Olmaliq", "Angren", "Yangiyo'l"],
+      "Navoiy": ["Navoiy shahri", "Karmana", "Qiziltepa", "Xatirchi", "Zarafshon"],
+      "Samarqand": ["Samarqand shahri", "Pastdarg'om", "Toyloq", "Jomboy", "Kattaqo'rg'on"],
+      "Buxoro": ["Buxoro shahri", "G'ijduvon", "Kogon", "Romitan"],
+      "Andijon": ["Andijon shahri", "Asaka", "Shahrixon", "Xo'jaobod"],
+      "Farg'ona": ["Farg'ona shahri", "Marg'ilon", "Qo'qon", "Oltiariq"],
+      "Namangan": ["Namangan shahri", "Chust", "Pop", "Kosonsoy"]
+    };
 
-// 🤖 TELEGRAM BOT (ixtiyoriy)
-const TOKEN = "YOUR_BOT_TOKEN";
-const CHAT_ID = "YOUR_CHAT_ID";
+    // Viloyat tanlanganda tumanlarni yangilash
+    function updateDistricts(regionId, districtId) {
+      const regionSelect = document.getElementById(regionId);
+      const districtSelect = document.getElementById(districtId);
+      const selectedRegion = regionSelect.value;
 
-// 🚀 APP
-const app = {
+      districtSelect.innerHTML = '<option value="">Tuman tanlang</option>';
 
-products: [],
-cart: [],
-user: null,
-isAdmin: false,
+      if (selectedRegion && districtsData[selectedRegion]) {
+        districtsData[selectedRegion].forEach(district => {
+          const option = document.createElement('option');
+          option.value = district;
+          option.textContent = district;
+          districtSelect.appendChild(option);
+        });
+      }
+    }
 
-init(){
+    // Hisoblash tugmasi bosilganda ishlovchi funksiya
+    function sendOrder() {
+      const pRegion = document.getElementById('pickupRegion').value;
+      const pDistrict = document.getElementById('pickupDistrict').value;
+      
+      const dRegion = document.getElementById('dropoffRegion').value;
+      const dDistrict = document.getElementById('dropoffDistrict').value;
+      
+      const item = document.getElementById('item').value;
+      const resultDiv = document.getElementById('result');
 
-// USER (Telegram yo‘q)
-this.user = {
-id: localStorage.getItem("uid") || Date.now(),
-name: localStorage.getItem("name") || "Guest"
-};
+      // Maydonlar to'liq tanlanganini tekshirish
+      if (!pRegion || !pDistrict || !dRegion || !dDistrict || !item) {
+        alert("Iltimos, barcha maydonlarni tanlang va yuk nomini kiriting!");
+        return;
+      }
 
-// Saqlab qo'yamiz
-localStorage.setItem("uid", this.user.id);
+      resultDiv.style.display = 'block';
+      resultDiv.innerHTML = "⏳ <i>AI marshrut va narxni hisoblamoqda...</i>";
 
-// ADMIN (o‘zing belgilaysan)
-if(this.user.id == 1111){
-this.isAdmin = true;
-document.getElementById("admin").style.display = "block";
-}
+      const pickupLocation = `${pRegion}, ${pDistrict}`;
+      const dropoffLocation = `${dRegion}, ${dDistrict}`;
 
-this.loadProducts();
+      // AI natijasini shakllantirish (Demo ko'rinishida)
+      setTimeout(() => {
+        const distance = Math.floor(Math.random() * 8) + 4;
+        const price = distance * 3500 + 8000;
+        const time = distance * 4;
 
-},
+        resultDiv.innerHTML = `
+          <h3 style="margin-top:0; color:#0088cc;">📦 AI Natijasi:</h3>
+          <p><b>📍 Qayerdan:</b> ${pickupLocation}</p>
+          <p><b>🏁 Qayerga:</b> ${dropoffLocation}</p>
+          <p><b>📦 Yuk:</b> ${item}</p>
+          <hr style="border:0.5px solid #ddd;">
+          <p>📏 <b>Masofa:</b> ~${distance} km</p>
+          <p>💰 <b>Tavsiya narx:</b> ${price.toLocaleString('uz-UZ')} so'm</p>
+          <p>⏱ <b>Vaqt:</b> ~${time} daqiqa</p>
+          <p>💡 <b>AI Maslahat:</b> Yo'nalish bo'yicha eng ma'qul marshrut tanlandi, kuryerlar tez topiladi.</p>
+        `;
+      }, 1000);
+    }
+  </script>
+</body>
+</html>
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EasyBring AI - Aqlli Yetkazib Berish</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #f4f7f6;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      margin: 0;
+      padding: 15px;
+    }
+    .card {
+      background: #ffffff;
+      padding: 25px;
+      border-radius: 12px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+      width: 100%;
+      max-width: 420px;
+      box-sizing: border-box;
+    }
+    h2 {
+      text-align: center;
+      color: #0088cc;
+      margin-top: 0;
+      margin-bottom: 20px;
+    }
+    .section-title {
+      font-weight: bold;
+      color: #333;
+      margin-top: 15px;
+      margin-bottom: 8px;
+      font-size: 15px;
+      border-bottom: 1px solid #eee;
+      padding-bottom: 4px;
+    }
+    .row {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+    select, input {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      box-sizing: border-box;
+      font-size: 14px;
+      background-color: #fff;
+    }
+    button {
+      width: 100%;
+      padding: 12px;
+      background-color: #0088cc;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      margin-top: 15px;
+    }
+    button:hover {
+      background-color: #006699;
+    }
+    #result {
+      margin-top: 15px;
+      padding: 12px;
+      background: #eef9ff;
+      border-left: 4px solid #0088cc;
+      border-radius: 6px;
+      display: none;
+    }
+  </style>
+</head>
+<body>
 
-// 📦 PRODUCTS
-addProduct(){
+  <div class="card">
+    <h2>🚚 EasyBring AI</h2>
+    
+    <!-- QAYERDAN (OLISH) -->
+    <div class="section-title">📍 Qayerdan (Olish):</div>
+    <div class="row">
+      <select id="pickupRegion" onchange="updateDistricts('pickupRegion', 'pickupDistrict')">
+        <option value="">Viloyatni tanlang</option>
+        <option value="Toshkent shahri">Toshkent shahri</option>
+        <option value="Toshkent viloyati">Toshkent viloyati</option>
+        <option value="Navoiy">Navoiy viloyati</option>
+        <option value="Samarqand">Samarqand viloyati</option>
+        <option value="Buxoro">Buxoro viloyati</option>
+        <option value="Andijon">Andijon viloyati</option>
+        <option value="Farg'ona">Farg'ona viloyati</option>
+        <option value="Namangan">Namangan viloyati</option>
+      </select>
 
-let name = document.getElementById("name").value;
-let price = Number(document.getElementById("price").value);
-let img = document.getElementById("img").value || "https://via.placeholder.com/150";
+      <select id="pickupDistrict">
+        <option value="">Tuman tanlang</option>
+      </select>
+    </div>
 
-if(!name || !price) return alert("To'ldir!");
+    <!-- QAYERGA (TOPSHIRISH) -->
+    <div class="section-title">🏁 Qayerga (Topshirish):</div>
+    <div class="row">
+      <select id="dropoffRegion" onchange="updateDistricts('dropoffRegion', 'dropoffDistrict')">
+        <option value="">Viloyatni tanlang</option>
+        <option value="Toshkent shahri">Toshkent shahri</option>
+        <option value="Toshkent viloyati">Toshkent viloyati</option>
+        <option value="Navoiy">Navoiy viloyati</option>
+        <option value="Samarqand">Samarqand viloyati</option>
+        <option value="Buxoro">Buxoro viloyati</option>
+        <option value="Andijon">Andijon viloyati</option>
+        <option value="Farg'ona">Farg'ona viloyati</option>
+        <option value="Namangan">Namangan viloyati</option>
+      </select>
 
-db.collection("products").add({name,price,img})
-.then(()=>{
-alert("Qo‘shildi!");
-this.loadProducts();
-});
+      <select id="dropoffDistrict">
+        <option value="">Tuman tanlang</option>
+      </select>
+    </div>
 
-},
+    <!-- YUK NOMI -->
+    <div class="section-title">📦 Yuk nomi:</div>
+    <input type="text" id="item" placeholder="Masalan: Hujjat, Noutbuk, Kiyim...">
 
-loadProducts(){
+    <button onclick="sendOrder()">Hisoblash</button>
 
-db.collection("products").get().then(snap=>{
-this.products=[];
-snap.forEach(d=>{
-this.products.push({id:d.id,...d.data()});
-});
-this.render();
-});
+    <div id="result"></div>
+  </div>
 
-},
+  <!-- JAVASCRIPT MANTIQLARI -->
+  <script>
+    // Viloyat va tumanlar ma'lumotlar bazasi
+    const districtsData = {
+      "Toshkent shahri": ["Chilonzor", "Yunusobod", "Mirzo Ulug'bek", "Yakkasaroy", "Mirobod", "Olmazor", "Sergeli"],
+      "Toshkent viloyati": ["Zangiota", "Qibray", "Chirchiq", "Olmaliq", "Angren", "Yangiyo'l"],
+      "Navoiy": ["Navoiy shahri", "Karmana", "Qiziltepa", "Xatirchi", "Zarafshon"],
+      "Samarqand": ["Samarqand shahri", "Pastdarg'om", "Toyloq", "Jomboy", "Kattaqo'rg'on"],
+      "Buxoro": ["Buxoro shahri", "G'ijduvon", "Kogon", "Romitan"],
+      "Andijon": ["Andijon shahri", "Asaka", "Shahrixon", "Xo'jaobod"],
+      "Farg'ona": ["Farg'ona shahri", "Marg'ilon", "Qo'qon", "Oltiariq"],
+      "Namangan": ["Namangan shahri", "Chust", "Pop", "Kosonsoy"]
+    };
 
-render(){
+    // Viloyat tanlanganda tumanlarni yangilash
+    function updateDistricts(regionId, districtId) {
+      const regionSelect = document.getElementById(regionId);
+      const districtSelect = document.getElementById(districtId);
+      const selectedRegion = regionSelect.value;
 
-const shop = document.getElementById("shop");
+      districtSelect.innerHTML = '<option value="">Tuman tanlang</option>';
 
-shop.innerHTML = this.products.map(p=>`
-<div class="card">
-<img src="${p.img}" width="100%">
-<b>${p.name}</b><br>
-${p.price} so'm<br>
-<button onclick="app.addCart('${p.id}')">Savatga</button>
-</div>
-`).join("");
+      if (selectedRegion && districtsData[selectedRegion]) {
+        districtsData[selectedRegion].forEach(district => {
+          const option = document.createElement('option');
+          option.value = district;
+          option.textContent = district;
+          districtSelect.appendChild(option);
+        });
+      }
+    }
 
-},
+    // Hisoblash tugmasi bosilganda ishlovchi funksiya
+    function sendOrder() {
+      const pRegion = document.getElementById('pickupRegion').value;
+      const pDistrict = document.getElementById('pickupDistrict').value;
+      
+      const dRegion = document.getElementById('dropoffRegion').value;
+      const dDistrict = document.getElementById('dropoffDistrict').value;
+      
+      const item = document.getElementById('item').value;
+      const resultDiv = document.getElementById('result');
 
-// 🛒 CART
-addCart(id){
+      // Maydonlar to'liq tanlanganini tekshirish
+      if (!pRegion || !pDistrict || !dRegion || !dDistrict || !item) {
+        alert("Iltimos, barcha maydonlarni tanlang va yuk nomini kiriting!");
+        return;
+      }
 
-let item = this.products.find(x=>x.id==id);
-let exist = this.cart.find(x=>x.id==id);
+      resultDiv.style.display = 'block';
+      resultDiv.innerHTML = "⏳ <i>AI marshrut va narxni hisoblamoqda...</i>";
 
-if(exist) exist.qty++;
-else this.cart.push({...item, qty:1});
+      const pickupLocation = `${pRegion}, ${pDistrict}`;
+      const dropoffLocation = `${dRegion}, ${dDistrict}`;
 
-this.renderCart();
+      // AI natijasini shakllantirish (Demo ko'rinishida)
+      setTimeout(() => {
+        const distance = Math.floor(Math.random() * 8) + 4;
+        const price = distance * 3500 + 8000;
+        const time = distance * 4;
 
-},
-
-renderCart(){
-
-const div = document.getElementById("cart");
-
-if(this.cart.length==0){
-div.innerHTML="Savat bo‘sh";
-return;
-}
-
-let total=0;
-
-div.innerHTML = this.cart.map(c=>{
-total+=c.price*c.qty;
-return `<div>${c.name} x${c.qty}</div>`;
-}).join("");
-
-div.innerHTML += `<b>Jami: ${total} so'm</b>`;
-
-},
-
-// 📤 CHECKOUT
-checkout(){
-
-if(this.cart.length==0){
-alert("Savat bo‘sh!");
-return;
-}
-
-let total=0;
-this.cart.forEach(x=> total+=x.price*x.qty);
-
-const order={
-user:this.user,
-items:this.cart,
-total,
-time:new Date().toLocaleString()
-};
-
-db.collection("orders").add(order);
-
-// Telegramga yuborish (optional)
-fetch(`https://api.telegram.org/bot${TOKEN}/sendMessage`,{
-method:"POST",
-headers:{"Content-Type":"application/json"},
-body:JSON.stringify({
-chat_id: CHAT_ID,
-text: JSON.stringify(order,null,2)
-})
-});
-
-alert("Buyurtma yuborildi!");
-this.cart=[];
-this.renderCart();
-
-}
-
-};
-
-app.init();
-
-</script>
-
+        resultDiv.innerHTML = `
+          <h3 style="margin-top:0; color:#0088cc;">📦 AI Natijasi:</h3>
+          <p><b>📍 Qayerdan:</b> ${pickupLocation}</p>
+          <p><b>🏁 Qayerga:</b> ${dropoffLocation}</p>
+          <p><b>📦 Yuk:</b> ${item}</p>
+          <hr style="border:0.5px solid #ddd;">
+          <p>📏 <b>Masofa:</b> ~${distance} km</p>
+          <p>💰 <b>Tavsiya narx:</b> ${price.toLocaleString('uz-UZ')} so'm</p>
+          <p>⏱ <b>Vaqt:</b> ~${time} daqiqa</p>
+          <p>💡 <b>AI Maslahat:</b> Yo'nalish bo'yicha eng ma'qul marshrut tanlandi, kuryerlar tez topiladi.</p>
+        `;
+      }, 1000);
+    }
+  </script>
 </body>
 </html>
