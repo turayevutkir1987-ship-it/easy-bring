@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>EasyBring Mobility AI - Smart Transport & Cargo Platform</title>
+    <title>EasyBring Mobility AI - Smart Transport & Cargo</title>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
@@ -27,7 +27,7 @@
         }
 
         body {
-            background-color: #1e293b;
+            background-color: #0f172a;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -38,7 +38,7 @@
         .app-container {
             width: 100%;
             max-width: 420px;
-            height: 860px;
+            height: 880px;
             background-color: var(--bg);
             border-radius: 36px;
             overflow: hidden;
@@ -46,15 +46,21 @@
             display: flex;
             flex-direction: column;
             position: relative;
-            border: 8px solid #0f172a;
+            border: 6px solid #1e293b;
         }
 
         /* Top Header & Role Switcher */
         .app-header {
             background: linear-gradient(135deg, #0284c7, #1e40af);
             color: white;
-            padding: 20px 20px 16px 20px;
+            padding: 20px 18px 16px 18px;
             border-radius: 0 0 24px 24px;
+            transition: all 0.3s ease;
+        }
+
+        .app-header.driver-mode {
+            background: linear-gradient(135deg, #0f172a, #1e293b);
+            border-bottom: 2px solid #10b981;
         }
 
         .header-top {
@@ -65,7 +71,7 @@
         }
 
         .logo-title {
-            font-size: 20px;
+            font-size: 19px;
             font-weight: 800;
             display: flex;
             align-items: center;
@@ -75,32 +81,41 @@
         .role-badge {
             background: rgba(255, 255, 255, 0.2);
             backdrop-filter: blur(8px);
-            padding: 4px 12px;
+            padding: 6px 14px;
             border-radius: 20px;
             font-size: 12px;
-            font-weight: 600;
+            font-weight: 700;
             cursor: pointer;
             transition: all 0.3s ease;
             border: 1px solid rgba(255, 255, 255, 0.3);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .role-badge.driver {
+            background: #10b981;
+            color: white;
+            border-color: #34d399;
         }
 
         /* Tabs Selection */
         .service-tabs {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 8px;
+            gap: 6px;
             background: rgba(255, 255, 255, 0.15);
             padding: 4px;
-            border-radius: 16px;
+            border-radius: 14px;
         }
 
         .tab-btn {
             background: transparent;
             border: none;
             color: rgba(255, 255, 255, 0.8);
-            padding: 10px 4px;
-            border-radius: 12px;
-            font-size: 12px;
+            padding: 8px 4px;
+            border-radius: 10px;
+            font-size: 11px;
             font-weight: 700;
             cursor: pointer;
             display: flex;
@@ -116,41 +131,47 @@
             box-shadow: 0 4px 12px rgba(0,0,0,0.1);
         }
 
-        /* Content Scrollable Area */
+        /* Content Area */
         .main-content {
             flex: 1;
             overflow-y: auto;
-            padding: 16px;
+            padding: 14px;
             display: flex;
             flex-direction: column;
-            gap: 16px;
+            gap: 14px;
         }
 
         .card {
             background: var(--card-bg);
-            border-radius: 20px;
-            padding: 18px;
+            border-radius: 18px;
+            padding: 16px;
             border: 1px solid var(--border);
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
         }
 
         .card-title {
-            font-size: 14px;
-            font-weight: 700;
+            font-size: 13px;
+            font-weight: 800;
             color: var(--text-muted);
-            margin-bottom: 12px;
+            margin-bottom: 10px;
             text-transform: uppercase;
             letter-spacing: 0.5px;
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 6px;
         }
 
-        /* Form Controls */
         .input-group {
             display: flex;
             flex-direction: column;
             gap: 10px;
+        }
+
+        .input-label {
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--text-muted);
+            margin-bottom: 2px;
         }
 
         .input-field {
@@ -159,59 +180,50 @@
 
         .input-field i {
             position: absolute;
-            left: 14px;
+            left: 12px;
             top: 50%;
             transform: translateY(-50%);
             color: var(--primary);
-            font-size: 16px;
+            font-size: 14px;
         }
 
         .input-field select, .input-field input {
             width: 100%;
-            padding: 12px 14px 12px 42px;
-            border-radius: 12px;
+            padding: 10px 12px 10px 38px;
+            border-radius: 10px;
             border: 1.5px solid var(--border);
             outline: none;
-            font-size: 14px;
+            font-size: 13px;
             font-weight: 600;
             color: var(--text-main);
             background: #f8fafc;
-            transition: border 0.3s;
         }
 
-        .input-field select:focus, .input-field input:focus {
-            border-color: var(--primary);
-            background: white;
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
         }
 
-        /* AI Estimator Box */
+        /* AI Result Box */
         .ai-result-box {
             background: linear-gradient(135deg, #f0fdf4, #dcfce7);
             border: 1.5px solid #86efac;
-            border-radius: 20px;
-            padding: 16px;
+            border-radius: 18px;
+            padding: 14px;
             display: none;
             flex-direction: column;
-            gap: 12px;
-            animation: fadeIn 0.4s ease;
+            gap: 10px;
+            animation: fadeIn 0.3s ease;
         }
 
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
+            from { opacity: 0; transform: translateY(8px); }
             to { opacity: 1; transform: translateY(0); }
         }
 
-        .ai-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            color: #166534;
-            font-size: 13px;
-            font-weight: 700;
-        }
-
         .price-tag {
-            font-size: 24px;
+            font-size: 22px;
             font-weight: 800;
             color: #15803d;
         }
@@ -219,375 +231,678 @@
         .metrics-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
-            gap: 10px;
+            gap: 8px;
         }
 
         .metric-item {
-            background: rgba(255, 255, 255, 0.7);
-            padding: 8px 12px;
-            border-radius: 10px;
-            font-size: 12px;
+            background: rgba(255, 255, 255, 0.8);
+            padding: 6px 10px;
+            border-radius: 8px;
+            font-size: 11px;
             font-weight: 600;
             color: #166534;
         }
 
-        .ai-tip {
-            font-size: 12px;
-            color: #15803d;
-            background: rgba(255, 255, 255, 0.9);
-            padding: 10px;
-            border-radius: 10px;
-            border-left: 4px solid #22c55e;
-            line-height: 1.4;
-        }
-
-        /* Primary Button */
         .btn-action {
             width: 100%;
             background: linear-gradient(135deg, #10b981, #059669);
             color: white;
             border: none;
-            padding: 16px;
-            border-radius: 16px;
-            font-size: 15px;
+            padding: 14px;
+            border-radius: 14px;
+            font-size: 14px;
             font-weight: 800;
             cursor: pointer;
-            box-shadow: 0 10px 15px -3px rgba(16, 185, 129, 0.3);
             display: flex;
             justify-content: center;
             align-items: center;
-            gap: 10px;
-            transition: all 0.2s;
+            gap: 8px;
+            box-shadow: 0 8px 12px -2px rgba(16, 185, 129, 0.3);
         }
 
-        .btn-action:active {
-            transform: scale(0.98);
-        }
+        .btn-action:active { transform: scale(0.98); }
 
-        /* Driver Mode Panel */
+        /* Driver View Styles */
         .driver-panel {
             display: none;
             flex-direction: column;
             gap: 12px;
         }
 
+        /* Yangilangan Balans Bloki */
+        .driver-stats-card {
+            background: #0f172a;
+            color: white;
+            border-radius: 18px;
+            padding: 14px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            border: 1px solid #1e293b;
+        }
+
+        .driver-header-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #1e293b;
+            padding-bottom: 8px;
+        }
+
+        .balance-grid {
+            display: grid;
+            grid-template-columns: 1.2fr 1fr 1.2fr;
+            gap: 6px;
+            background: #1e293b;
+            padding: 8px;
+            border-radius: 12px;
+            text-align: center;
+        }
+
+        .balance-item {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .balance-item .lbl {
+            font-size: 9px;
+            color: #94a3b8;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .balance-item .val {
+            font-size: 11px;
+            font-weight: 800;
+        }
+
         .order-card {
             background: white;
-            border-radius: 16px;
-            padding: 14px;
+            border-radius: 14px;
+            padding: 12px;
             border: 1px solid var(--border);
             display: flex;
             flex-direction: column;
-            gap: 8px;
+            gap: 6px;
+            position: relative;
         }
 
         .order-badge {
             align-self: flex-start;
-            padding: 4px 8px;
+            padding: 3px 8px;
             border-radius: 6px;
-            font-size: 11px;
+            font-size: 10px;
             font-weight: 700;
         }
 
         .badge-taxi { background: #e0f2fe; color: #0369a1; }
         .badge-cargo { background: #fef3c7; color: #b45309; }
 
-        .route-line {
-            font-size: 13px;
+        .accept-btn {
+            background: #0284c7;
+            color: white;
+            border: none;
+            padding: 8px 14px;
+            border-radius: 8px;
+            font-size: 12px;
             font-weight: 700;
-            color: var(--text-main);
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        /* Bottom Nav */
-        .bottom-nav {
-            background: white;
-            border-top: 1px solid var(--border);
-            padding: 10px 20px;
-            display: flex;
-            justify-content: space-around;
-        }
-
-        .nav-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 4px;
-            font-size: 11px;
-            font-weight: 700;
-            color: var(--text-muted);
             cursor: pointer;
         }
 
-        .nav-item.active {
-            color: var(--primary);
+        .accept-btn.accepted {
+            background: #10b981;
+            cursor: default;
         }
 
-        .nav-item i {
-            font-size: 18px;
+        /* Registration Modal */
+        .modal-overlay {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(15, 23, 42, 0.85);
+            backdrop-filter: blur(6px);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            z-index: 999;
+        }
+
+        .modal-card {
+            background: white;
+            width: 100%;
+            border-radius: 24px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3);
         }
     </style>
 </head>
 <body>
 
 <div class="app-container">
+    <!-- Modal Registration for Driver -->
+    <div class="modal-overlay" id="driverRegModal">
+        <div class="modal-card">
+            <div style="text-align: center; margin-bottom: 4px;">
+                <i class="fa-solid fa-id-card" style="font-size: 32px; color: var(--primary);"></i>
+                <h3 style="font-size: 16px; font-weight: 800; color: #0f172a; margin-top: 6px;">Haydovchi Ro'yxatdan O'tishi</h3>
+                <p style="font-size: 11px; color: #64748b;">Buyurtmalarni qabul qilish uchun ma'lumotlarni kiriting</p>
+            </div>
+            
+            <div class="input-group">
+                <div class="input-field">
+                    <i class="fa-solid fa-user"></i>
+                    <input type="text" id="regDriverName" placeholder="Ism va Familiyangiz">
+                </div>
+                <div class="input-field">
+                    <i class="fa-solid fa-phone"></i>
+                    <input type="tel" id="regDriverPhone" value="+998 90 777 66 55" placeholder="Telefon raqamingiz">
+                </div>
+                <div class="grid-2">
+                    <div class="input-field">
+                        <i class="fa-solid fa-car"></i>
+                        <input type="text" id="regCarModel" placeholder="Masalan: Cobalt">
+                    </div>
+                    <div class="input-field">
+                        <i class="fa-solid fa-hashtag"></i>
+                        <input type="text" id="regCarNumber" placeholder="Masalan: 01A777AA">
+                    </div>
+                </div>
+            </div>
+
+            <button class="btn-action" id="btnSaveDriver" style="margin-top: 8px;">
+                <i class="fa-solid fa-check-circle"></i> Tasdiqlash va Kirish
+            </button>
+        </div>
+    </div>
+
     <!-- Header -->
-    <div class="app-header">
+    <div class="app-header" id="mainHeader">
         <div class="header-top">
             <div class="logo-title">
                 <i class="fa-solid fa-bolt-lightning" style="color: #facc15;"></i>
                 <span>EasyBring AI</span>
             </div>
-            <div class="role-badge" id="roleBtn" onclick="toggleRole()">
-                <i class="fa-solid fa-user"></i> <span id="roleText">Mijoz rejimida</span>
+            <div class="role-badge" id="roleBtn">
+                <i class="fa-solid fa-repeat"></i> <span id="roleText">Mijoz rejimi</span>
             </div>
         </div>
 
         <!-- Service Tabs -->
         <div class="service-tabs" id="clientTabs">
-            <button class="tab-btn active" onclick="switchTab('taxi')">
-                <i class="fa-solid fa-taxi"></i>
-                Taksi / Yo'lovchi
+            <button class="tab-btn active" id="btnTaxi">
+                <i class="fa-solid fa-taxi"></i> Taksi
             </button>
-            <button class="tab-btn" onclick="switchTab('cargo')">
-                <i class="fa-solid fa-box"></i>
-                Posilka / Kargo
+            <button class="tab-btn" id="btnCargo">
+                <i class="fa-solid fa-box"></i> Uydan-Uyga
             </button>
-            <button class="tab-btn" onclick="switchTab('truck')">
-                <i class="fa-solid fa-truck-ramps"></i>
-                Katta Yuk
+            <button class="tab-btn" id="btnTruck">
+                <i class="fa-solid fa-truck-ramps"></i> Katta Yuk
             </button>
         </div>
     </div>
 
-    <!-- Main Content Area -->
+    <!-- Main Content -->
     <div class="main-content">
 
         <!-- CLIENT VIEW -->
-        <div id="clientView" style="display: flex; flex-direction: column; gap: 16px;">
-            <!-- Routing Form -->
+        <div id="clientView" style="display: flex; flex-direction: column; gap: 12px;">
             <div class="card">
                 <div class="card-title">
-                    <i class="fa-solid fa-location-dot" style="color: var(--primary);"></i>
-                    Yo'nalish va Bagaj Ma'lumotlari
+                    <i class="fa-solid fa-circle-dot" style="color: var(--primary);"></i>
+                    Jo'nash Manzili (Qayerdan?)
                 </div>
-
                 <div class="input-group">
-                    <div class="input-field">
-                        <i class="fa-solid fa-circle-dot"></i>
-                        <select id="fromLoc">
-                            <option value="Toshkent">Toshkent shahri</option>
-                            <option value="Samarqand">Samarqand</option>
-                            <option value="Navoiy">Navoiy</option>
-                            <option value="Buxoro">Buxoro</option>
-                            <option value="Andijon">Andijon / Farg'ona</option>
-                        </select>
+                    <div class="grid-2">
+                        <div>
+                            <div class="input-label">Viloyat</div>
+                            <div class="input-field">
+                                <i class="fa-solid fa-map"></i>
+                                <select id="fromRegion">
+                                    <option value="">Viloyat tanlang</option>
+                                    <option value="Toshkent shahri">Toshkent sh.</option>
+                                    <option value="Toshkent viloyati">Toshkent vil.</option>
+                                    <option value="Navoiy">Navoiy</option>
+                                    <option value="Samarqand">Samarqand</option>
+                                    <option value="Buxoro">Buxoro</option>
+                                    <option value="Farg'ona">Farg'ona</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="input-label">Tuman</div>
+                            <div class="input-field">
+                                <i class="fa-solid fa-location-arrow"></i>
+                                <select id="fromDistrict">
+                                    <option value="">Oldin viloyatni tanlang</option>
+                                </select>
+                            </div>
+                        </div>
                     </div>
-
                     <div class="input-field">
-                        <i class="fa-solid fa-location-crosshairs" style="color: #ef4444;"></i>
-                        <select id="toLoc">
-                            <option value="Samarqand">Samarqand</option>
-                            <option value="Navoiy" selected>Navoiy</option>
-                            <option value="Toshkent">Toshkent shahri</option>
-                            <option value="Buxoro">Buxoro</option>
-                        </select>
-                    </div>
-
-                    <div class="input-field" id="extraCargoOption">
-                        <i class="fa-solid fa-weight-hanging"></i>
-                        <input type="text" id="cargoWeight" placeholder="Posilka og'irligi (masalan: 5 kg, Hujjatlar)">
-                    </div>
-
-                    <div class="input-field">
-                        <i class="fa-solid fa-phone"></i>
-                        <input type="tel" id="userPhone" value="+998 90 123 45 67">
+                        <i class="fa-solid fa-house"></i>
+                        <input type="text" id="fromAddress" placeholder="Ko'cha, Uy raqami va mo'ljal">
                     </div>
                 </div>
             </div>
 
-            <!-- Action Button -->
-            <button class="btn-action" onclick="calculateAIOrder()">
-                <i class="fa-solid fa-wand-magic-sparkles"></i>
-                AI Narx va Yo'nalishni Hisoblash
+            <div class="card">
+                <div class="card-title">
+                    <i class="fa-solid fa-location-dot" style="color: #ef4444;"></i>
+                    Yetkazish Manzili (Qayerga?)
+                </div>
+                <div class="input-group">
+                    <div class="grid-2">
+                        <div>
+                            <div class="input-label">Viloyat</div>
+                            <div class="input-field">
+                                <i class="fa-solid fa-map"></i>
+                                <select id="toRegion">
+                                    <option value="">Viloyat tanlang</option>
+                                    <option value="Toshkent shahri">Toshkent sh.</option>
+                                    <option value="Toshkent viloyati">Toshkent vil.</option>
+                                    <option value="Navoiy">Navoiy</option>
+                                    <option value="Samarqand">Samarqand</option>
+                                    <option value="Buxoro">Buxoro</option>
+                                    <option value="Farg'ona">Farg'ona</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="input-label">Tuman</div>
+                            <div class="input-field">
+                                <i class="fa-solid fa-location-arrow"></i>
+                                <select id="toDistrict">
+                                    <option value="">Oldin viloyatni tanlang</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="input-field">
+                        <i class="fa-solid fa-house-chimney"></i>
+                        <input type="text" id="toAddress" placeholder="Qabul qiluvchi ko'chasi va uy raqami">
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="input-group">
+                    <div class="input-field" id="cargoInfoBox" style="display: none;">
+                        <i class="fa-solid fa-box-open"></i>
+                        <input type="text" id="cargoDetail" placeholder="Posilka tavsifi (masalan: Noutbuk, Hujjatlar)">
+                    </div>
+                    <div class="input-field">
+                        <i class="fa-solid fa-phone"></i>
+                        <input type="tel" id="userPhone" value="+998 90 123 45 67" placeholder="Telefon raqamingiz">
+                    </div>
+                </div>
+            </div>
+
+            <button class="btn-action" id="btnCalculate">
+                <i class="fa-solid fa-wand-magic-sparkles"></i> AI Hisoblash va Buyurtma Yaratish
             </button>
 
-            <!-- AI Output Result -->
             <div class="ai-result-box" id="aiResult">
-                <div class="ai-header">
-                    <span><i class="fa-solid fa-brain"></i> AI SMRT OPTIMIZATION</span>
-                    <span style="background: #22c55e; color: white; padding: 2px 8px; border-radius: 12px; font-size: 10px;">Mos kuryer bor</span>
+                <div style="display: flex; justify-content: space-between; font-weight: 800; font-size: 12px; color: #166534;">
+                    <span><i class="fa-solid fa-brain"></i> EASYBRING AI OPTIMIZATION</span>
+                    <span>Uydan-Uyga Dastavka</span>
                 </div>
-
-                <div class="price-tag" id="calculatedPrice">85,000 so'm</div>
-
+                <div class="price-tag" id="calculatedPrice">95,000 so'm</div>
                 <div class="metrics-grid">
-                    <div class="metric-item">
-                        <i class="fa-solid fa-route"></i> Masofa: <span id="distVal">340 km</span>
-                    </div>
-                    <div class="metric-item">
-                        <i class="fa-solid fa-clock"></i> Yetkazish: <span id="timeVal">~3.5 soat</span>
-                    </div>
-                    <div class="metric-item">
-                        <i class="fa-solid fa-leaf" style="color: #16a34a;"></i> CO2 Tejamkorlik: 40%
-                    </div>
-                    <div class="metric-item">
-                        <i class="fa-solid fa-car"></i> Mos transport: Cobalt / Gentra
-                    </div>
+                    <div class="metric-item"><i class="fa-solid fa-route"></i> Masofa: <span id="distVal">340 km</span></div>
+                    <div class="metric-item"><i class="fa-solid fa-clock"></i> Vaqt: <span id="timeVal">~3.5 soat</span></div>
                 </div>
-
-                <div class="ai-tip" id="aiTipText">
-                    💡 **AI Tahlili:** Marshrut bo'yicha 2 nafar haydovchi bagajida bo'sh joy bor. Yo'lovchi + Posilka birgalikda ketgani uchun narx 30% arzonroq hisoblandi!
-                </div>
-
-                <button class="btn-action" style="background: #0284c7;" onclick="confirmOrder()">
-                    <i class="fa-solid fa-check-circle"></i>
-                    Buyurtmani Tasdiqlash
+                <button class="btn-action" style="background: #0284c7;" id="btnConfirm">
+                    <i class="fa-solid fa-paper-plane"></i> Haydovchilarga Yuborish
                 </button>
             </div>
         </div>
 
-        <!-- DRIVER VIEW (Switchable) -->
+        <!-- DRIVER VIEW -->
         <div id="driverView" class="driver-panel">
-            <div class="card" style="background: #0f172a; color: white;">
-                <div style="font-size: 12px; color: #94a3b8;">HAYDOVCHI DASHBOARDI</div>
-                <div style="font-size: 22px; font-weight: 800; color: #38bdf8; margin-top: 4px;">Balans: 420,000 so'm</div>
-                <div style="font-size: 12px; color: #4ade80; margin-top: 4px;"><i class="fa-solid fa-circle"></i> AI Rejim Yoqilgan (Bagaj va O'rindiqlar moslanmoqda)</div>
-            </div>
+            <!-- Dynamic Balance Card -->
+            <div class="driver-stats-card">
+                <div class="driver-header-info">
+                    <div>
+                        <div style="font-size: 13px; font-weight: 800; color: #38bdf8;" id="driverInfoText">HAYDOVCHI PROFILI</div>
+                        <div style="font-size: 10px; color: #94a3b8;" id="driverCarText">Cobalt (01 A 777 AA)</div>
+                    </div>
+                    <div style="text-align: right;">
+                        <div style="font-size: 10px; color: #4ade80;"><i class="fa-solid fa-circle"></i> AI Rejim Faol</div>
+                        <div style="font-size: 9px; color: #cbd5e1;" id="resetTimerText">Yangilanish: 24:00:00</div>
+                    </div>
+                </div>
 
-            <div class="card-title" style="margin-top: 8px;">
-                <i class="fa-solid fa-list-check"></i> YAQIN ATROFDAGI AI BUYURTMALAR
-            </div>
-
-            <div class="order-card">
-                <div class="order-badge badge-cargo">📦 Posilka (Bagaj uchun)</div>
-                <div class="route-line">Toshkent ➔ Navoiy</div>
-                <div style="font-size: 12px; color: var(--text-muted);">Noutbuk va Hujjatlar (3 kg)</div>
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 8px;">
-                    <span style="font-weight: 800; color: var(--accent); font-size: 16px;">+75,000 so'm</span>
-                    <button style="background: var(--primary); color: white; border: none; padding: 6px 12px; border-radius: 8px; font-weight: 700; cursor: pointer;">Qabul qilish</button>
+                <div class="balance-grid">
+                    <div class="balance-item">
+                        <span class="lbl">Umumiy Tushum</span>
+                        <span class="val" style="color: #38bdf8;" id="totalEarnedVal">0 so'm</span>
+                    </div>
+                    <div class="balance-item" style="border-left: 1px solid #334155; border-right: 1px solid #334155;">
+                        <span class="lbl">Ilova Haqqi (10%)</span>
+                        <span class="val" style="color: #f43f5e;" id="appFeeVal">0 so'm</span>
+                    </div>
+                    <div class="balance-item">
+                        <span class="lbl">Sizning Balansingiz</span>
+                        <span class="val" style="color: #4ade80;" id="netBalanceVal">0 so'm</span>
+                    </div>
                 </div>
             </div>
 
-            <div class="order-card">
-                <div class="order-badge badge-taxi">🚕 Yo'lovchi (1 kishi)</div>
-                <div class="route-line">Toshkent ➔ Samarqand</div>
-                <div style="font-size: 12px; color: var(--text-muted);">Old o'rindiq so'ralgan</div>
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 8px;">
-                    <span style="font-weight: 800; color: var(--accent); font-size: 16px;">+110,000 so'm</span>
-                    <button style="background: var(--primary); color: white; border: none; padding: 6px 12px; border-radius: 8px; font-weight: 700; cursor: pointer;">Qabul qilish</button>
-                </div>
+            <div class="card-title" style="margin-top: 4px;">
+                <i class="fa-solid fa-list-check" style="color: var(--primary);"></i> Yaqin Atrofdagi Real Buyurtmalar
             </div>
+
+            <div id="driverOrdersList" style="display: flex; flex-direction: column; gap: 10px;"></div>
         </div>
 
-    </div>
-
-    <!-- Bottom Navigation -->
-    <div class="bottom-nav">
-        <div class="nav-item active">
-            <i class="fa-solid fa-compass"></i>
-            <span>Bosh sahifa</span>
-        </div>
-        <div class="nav-item">
-            <i class="fa-solid fa-clock-history"></i>
-            <span>Tarix</span>
-        </div>
-        <div class="nav-item">
-            <i class="fa-solid fa-headset"></i>
-            <span>AI Yordamchi</span>
-        </div>
     </div>
 </div>
 
 <script>
-    let currentRole = 'client'; // 'client' or 'driver'
+    const districtsData = {
+        "Toshkent shahri": ["Yunusobod", "Chilonzor", "Mirzo Ulug'bek", "Yakkasaroy", "Sergeli", "Yashnobod", "Shayxontohur"],
+        "Toshkent viloyati": ["Chirchiq sh.", "Olmaliq sh.", "Angren sh.", "Qibray", "Zangiota", "Parkent"],
+        "Navoiy": ["Navoiy shahri", "Karmana", "Zarafshon", "Qiziltepa", "Xatirchi", "Nurota"],
+        "Samarqand": ["Samarqand shahri", "Kattaqo'rg'on", "Pastdarg'om", "Jomboy", "Bulung'ur", "Urgut"],
+        "Buxoro": ["Buxoro shahri", "G'ijduvon", "Kogon", "Vobkent", "Jondor"],
+        "Farg'ona": ["Farg'ona shahri", "Marg'ilon sh.", "Qo'qon sh.", "Oltiariq", "Rishton"]
+    };
+
+    let globalOrders = [
+        {
+            id: 101,
+            type: 'cargo',
+            from: 'Toshkent sh., Chilonzor (Qatortol 12-uy)',
+            to: 'Navoiy, Karmana (Amir Temur 14-uy)',
+            detail: 'Noutbuk va Hujjatlar (Uydan-uyga)',
+            priceNum: 85000,
+            price: '85,000 so\'m',
+            phone: '+998 90 555 44 33',
+            status: 'new'
+        }
+    ];
+
+    let currentRole = 'client';
     let currentTab = 'taxi';
+    let isDriverRegistered = false;
+    let driverData = {};
+
+    // Balans Tizimi O'zgaruvchilari
+    let totalEarned = 0;
+    let seconds24h = 86400; // 24 soat (86400 sekund)
+
+    document.addEventListener("DOMContentLoaded", function() {
+        document.getElementById('fromRegion').addEventListener('change', function() { updateDistricts(this.value, 'fromDistrict'); });
+        document.getElementById('toRegion').addEventListener('change', function() { updateDistricts(this.value, 'toDistrict'); });
+        document.getElementById('roleBtn').addEventListener('click', toggleRole);
+
+        document.getElementById('btnTaxi').addEventListener('click', function() { switchTab('taxi', this); });
+        document.getElementById('btnCargo').addEventListener('click', function() { switchTab('cargo', this); });
+        document.getElementById('btnTruck').addEventListener('click', function() { switchTab('truck', this); });
+
+        document.getElementById('btnCalculate').addEventListener('click', calculateAIOrder);
+        document.getElementById('btnConfirm').addEventListener('click', confirmOrder);
+        document.getElementById('btnSaveDriver').addEventListener('click', saveDriverRegistration);
+
+        // 24 soatlik Taymerni Ishga Tushirish
+        start24hTimer();
+    });
+
+    function updateDistricts(regionName, districtSelectId) {
+        const districtSelect = document.getElementById(districtSelectId);
+        districtSelect.innerHTML = '';
+
+        if (!regionName || !districtsData[regionName]) {
+            districtSelect.innerHTML = '<option value="">Oldin viloyatni tanlang</option>';
+            return;
+        }
+
+        const defaultOption = document.createElement('option');
+        defaultOption.value = '';
+        defaultOption.innerText = 'Tuman tanlang';
+        districtSelect.appendChild(defaultOption);
+
+        districtsData[regionName].forEach(function(district) {
+            const opt = document.createElement('option');
+            opt.value = district;
+            opt.innerText = district;
+            districtSelect.appendChild(opt);
+        });
+    }
 
     function toggleRole() {
-        if(currentRole === 'client') {
-            currentRole = 'driver';
-            document.getElementById('roleText').innerText = 'Haydovchi rejimida';
-            document.getElementById('clientView').style.display = 'none';
-            document.getElementById('clientTabs').style.display = 'none';
-            document.getElementById('driverView').style.display = 'flex';
-            document.getElementById('roleBtn').style.background = '#10b981';
+        if (currentRole === 'client') {
+            if (!isDriverRegistered) {
+                document.getElementById('driverRegModal').style.display = 'flex';
+                return;
+            }
+            switchToDriverView();
         } else {
-            currentRole = 'client';
-            document.getElementById('roleText').innerText = 'Mijoz rejimida';
-            document.getElementById('clientView').style.display = 'flex';
-            document.getElementById('clientTabs').style.display = 'grid';
-            document.getElementById('driverView').style.display = 'none';
-            document.getElementById('roleBtn').style.background = 'rgba(255, 255, 255, 0.2)';
+            switchToClientView();
         }
     }
 
-    function switchTab(tab) {
-        currentTab = tab;
-        const buttons = document.querySelectorAll('.tab-btn');
-        buttons.forEach(btn => btn.classList.remove('active'));
-        event.currentTarget.classList.add('active');
+    function saveDriverRegistration() {
+        const name = document.getElementById('regDriverName').value;
+        const phone = document.getElementById('regDriverPhone').value;
+        const car = document.getElementById('regCarModel').value;
+        const number = document.getElementById('regCarNumber').value;
 
-        const cargoInput = document.getElementById('extraCargoOption');
-        if(tab === 'cargo' || tab === 'truck') {
-            cargoInput.style.display = 'block';
+        if (!name || !phone || !car || !number) {
+            alert("Iltimos, barcha maydonlarni to'ldiring!");
+            return;
+        }
+
+        driverData = { name, phone, car, number };
+        isDriverRegistered = true;
+
+        document.getElementById('driverInfoText').innerText = name.toUpperCase();
+        document.getElementById('driverCarText').innerText = `${car} (${number})`;
+
+        document.getElementById('driverRegModal').style.display = 'none';
+        switchToDriverView();
+        alert("✅ Ro'yxatdan muvaffaqiyatli o'tdingiz!");
+    }
+
+    function switchToDriverView() {
+        currentRole = 'driver';
+        document.getElementById('roleText').innerText = 'Haydovchi rejimi';
+        document.getElementById('roleBtn').classList.add('driver');
+        document.getElementById('mainHeader').classList.add('driver-mode');
+        document.getElementById('clientView').style.display = 'none';
+        document.getElementById('clientTabs').style.display = 'none';
+        document.getElementById('driverView').style.display = 'flex';
+        renderDriverOrders();
+        updateBalanceUI();
+    }
+
+    function switchToClientView() {
+        currentRole = 'client';
+        document.getElementById('roleText').innerText = 'Mijoz rejimi';
+        document.getElementById('roleBtn').classList.remove('driver');
+        document.getElementById('mainHeader').classList.remove('driver-mode');
+        document.getElementById('clientView').style.display = 'flex';
+        document.getElementById('clientTabs').style.display = 'grid';
+        document.getElementById('driverView').style.display = 'none';
+    }
+
+    function switchTab(tab, element) {
+        currentTab = tab;
+        document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+        element.classList.add('active');
+        
+        const cargoBox = document.getElementById('cargoInfoBox');
+        if (tab === 'taxi') {
+            cargoBox.style.display = 'none';
         } else {
-            cargoInput.style.display = 'none';
+            cargoBox.style.display = 'block';
         }
     }
 
     function calculateAIOrder() {
-        const from = document.getElementById('fromLoc').value;
-        const to = document.getElementById('toLoc').value;
-        const aiBox = document.getElementById('aiResult');
-        
-        if(from === to) {
-            alert("Iltimos, har xil shaharlarni tanlang!");
+        const fromReg = document.getElementById('fromRegion').value;
+        const fromDist = document.getElementById('fromDistrict').value;
+        const fromAddr = document.getElementById('fromAddress').value;
+        const toReg = document.getElementById('toRegion').value;
+        const toDist = document.getElementById('toDistrict').value;
+        const toAddr = document.getElementById('toAddress').value;
+
+        if (!fromReg || !fromDist || !toReg || !toDist || !fromAddr || !toAddr) {
+            alert("Iltimos, Jo'nash va Yetkazish viloyati, tumanlari hamda ko'cha/uy nomlarini to'liq kiriting!");
             return;
         }
 
-        // Simulate AI Dynamic Algorithm
-        let basePrice = 60000;
-        if(from === 'Toshkent' && to === 'Navoiy') basePrice = 90000;
-        if(from === 'Toshkent' && to === 'Samarqand') basePrice = 70000;
-        if(currentTab === 'cargo') basePrice = Math.round(basePrice * 0.6);
-        if(currentTab === 'truck') basePrice = basePrice * 3;
+        let basePrice = 75000;
+        if (fromReg !== toReg) basePrice = 110000;
+        if (currentTab === 'cargo') basePrice = Math.round(basePrice * 0.7);
 
+        document.getElementById('calculatedPrice').setAttribute('data-price-num', basePrice);
         document.getElementById('calculatedPrice').innerText = basePrice.toLocaleString() + " so'm";
-        document.getElementById('distVal').innerText = (from==='Toshkent'&&to==='Navoiy'?'340 km':'280 km');
-        document.getElementById('timeVal').innerText = (from==='Toshkent'&&to==='Navoiy'?'~3.5 soat':'~2.8 soat');
-        
-        aiBox.style.display = 'flex';
+        document.getElementById('aiResult').style.display = 'flex';
     }
 
     function confirmOrder() {
-        alert("✅ Buyurtmangiz AI tizimiga kiritildi! Yaqin atrofdagi kuryer/haydovchi bilan bog'lanmoqdasiz...");
+        const fromReg = document.getElementById('fromRegion').value;
+        const fromDist = document.getElementById('fromDistrict').value;
+        const fromAddr = document.getElementById('fromAddress').value;
+        const toReg = document.getElementById('toRegion').value;
+        const toDist = document.getElementById('toDistrict').value;
+        const toAddr = document.getElementById('toAddress').value;
+        const phone = document.getElementById('userPhone').value;
+        const cargoDet = document.getElementById('cargoDetail').value || 'Standart Dastavka';
+        const priceNum = parseInt(document.getElementById('calculatedPrice').getAttribute('data-price-num')) || 85000;
+        const price = document.getElementById('calculatedPrice').innerText;
+
+        const newOrder = {
+            id: Date.now(),
+            type: currentTab,
+            from: `${fromReg}, ${fromDist} (${fromAddr})`,
+            to: `${toReg}, ${toDist} (${toAddr})`,
+            detail: cargoDet,
+            priceNum: priceNum,
+            price: price,
+            phone: phone,
+            status: 'new'
+        };
+
+        globalOrders.unshift(newOrder);
+        alert("✅ Buyurtmangiz yaratildi va haydovchilarga yuborildi!");
+        document.getElementById('aiResult').style.display = 'none';
+    }
+
+    function renderDriverOrders() {
+        const listContainer = document.getElementById('driverOrdersList');
+        listContainer.innerHTML = '';
+
+        if (globalOrders.length === 0) {
+            listContainer.innerHTML = '<div style="text-align:center; color:#94a3b8; font-size:12px; padding:20px;">Hozircha faol buyurtmalar yo\'q</div>';
+            return;
+        }
+
+        globalOrders.forEach(order => {
+            const card = document.createElement('div');
+            card.className = 'order-card';
+            card.id = `order-card-${order.id}`;
+            
+            const badgeClass = order.type === 'taxi' ? 'badge-taxi' : 'badge-cargo';
+            const badgeTitle = order.type === 'taxi' ? '🚕 Yo\'lovchi' : '📦 Uydan-Uyga Dastavka';
+
+            const buttonHtml = order.status === 'accepted' 
+                ? `<button class="accept-btn accepted" disabled>✓ Qabul qilindi (<span id="timer-${order.id}">10s</span>)</button>`
+                : `<button class="accept-btn" onclick="acceptOrder(${order.id})">Qabul qilish</button>`;
+
+            card.innerHTML = `
+                <div class="order-badge ${badgeClass}">${badgeTitle}</div>
+                <div style="font-size: 12px; font-weight: 800; color: #0f172a; margin-top: 4px;">
+                    <i class="fa-solid fa-circle-dot" style="color:#0284c7;"></i> Qayerdan: ${order.from}
+                </div>
+                <div style="font-size: 12px; font-weight: 800; color: #ef4444;">
+                    <i class="fa-solid fa-location-dot"></i> Qayerga: ${order.to}
+                </div>
+                <div style="font-size: 11px; color: #64748b; background: #f8fafc; padding: 6px; border-radius: 6px; margin-top:2px;">
+                    📝 Izoh: ${order.detail} | 📞 ${order.phone}
+                </div>
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 6px;">
+                    <span style="font-weight: 800; color: #10b981; font-size: 15px;">${order.price}</span>
+                    <div id="btn-container-${order.id}">${buttonHtml}</div>
+                </div>
+            `;
+            listContainer.appendChild(card);
+        });
+    }
+
+    function acceptOrder(orderId) {
+        const order = globalOrders.find(o => o.id === orderId);
+        if (order && order.status !== 'accepted') {
+            order.status = 'accepted';
+            
+            // Balansga narxni qo'shish
+            totalEarned += order.priceNum;
+            updateBalanceUI();
+
+            const btnContainer = document.getElementById(`btn-container-${orderId}`);
+            btnContainer.innerHTML = `<button class="accept-btn accepted" disabled>✓ Qabul qilindi (<span id="timer-${orderId}">10s</span>)</button>`;
+
+            alert(`🚕 Buyurtma qabul qilindi!\n\n💰 Tushum: ${order.price}\n📍 Manzil: ${order.from}\n📞 Telefon: ${order.phone}`);
+
+            // 10 soniyadan so'ng o'chib ketishi (test rejimi)
+            let secondsLeft = 10; 
+            const interval = setInterval(() => {
+                secondsLeft--;
+                const timerSpan = document.getElementById(`timer-${orderId}`);
+                if (timerSpan) timerSpan.innerText = `${secondsLeft}s`;
+
+                if (secondsLeft <= 0) {
+                    clearInterval(interval);
+                    globalOrders = globalOrders.filter(o => o.id !== orderId);
+                    renderDriverOrders();
+                }
+            }, 1000);
+        }
+    }
+
+    // Balans va Ilova haqqini qayta hisoblash funksiyasi
+    function updateBalanceUI() {
+        const appFee = Math.round(totalEarned * 0.10); // 10% Ilova haqqi
+        const netBalance = totalEarned - appFee; // Sof balans
+
+        document.getElementById('totalEarnedVal').innerText = totalEarned.toLocaleString() + " so'm";
+        document.getElementById('appFeeVal').innerText = appFee.toLocaleString() + " so'm";
+        document.getElementById('netBalanceVal').innerText = netBalance.toLocaleString() + " so'm";
+    }
+
+    // 24 Soatlik Taymer (Har 24 soatda pulni 0 so'mga tushirish)
+    function start24hTimer() {
+        setInterval(() => {
+            seconds24h--;
+            
+            if (seconds24h <= 0) {
+                // 24 soat tugaganda balans nolga tushadi
+                totalEarned = 0;
+                updateBalanceUI();
+                seconds24h = 86400; // Qayta 24 soatga sozlash
+                alert("⏰ 24 soat o'tdi! Kunlik balansingiz va ko'rsatkichlar 0 so'mga yangilandi.");
+            }
+
+            // Taymerni ekranda soat:minut:sekund qilib ko'rsatish
+            const hrs = Math.floor(seconds24h / 3600);
+            const mins = Math.floor((seconds24h % 3600) / 60);
+            const secs = seconds24h % 60;
+            const formattedTime = `${String(hrs).padStart(2, '0')}:${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+            
+            const timerElem = document.getElementById('resetTimerText');
+            if(timerElem) timerElem.innerText = `Yangilanish: ${formattedTime}`;
+        }, 1000);
     }
 </script>
 
 </body>
 </html>
-```eof
 
----
-
-### Hakamlar oldida BIZNES & PITCHING Taqdimot Matni (1-O'rin Strategiyasi):
-
-Taqdimotda sahnaga chiqib shunday deysiz:
-
-> **"Hurmatli hakamlar! O'zbekistonda shaharlararo taksi va posilka bozori yiliga $500M+ ni tashkil qiladi, lekin u 100% noaniq va tartibsiz.**
-> 
-> Bitta Cobalt Toshkentdan Navoiyga ketayotganda, uning bagaji 70% holatda bo'sh ketadi. Boshqa tomonda esa kimdir Navoiyga shoshilinch posilka bera olmay kuryer qidiradi.
-> 
-> Biz **EasyBring AI Mobility** platformasini yaratdik! 
-> 1. **AI Matchmaking:** Tizim haydovchining bo'sh bagaji va o'rindiqlarini aniqlab, bir yo'nalishdagi yo'lovchi va posilkani birlashtiradi.
-> 2. **30% Arzonroq:** Yo'lovchi va kuryer xarajatni bo'lishgani uchun narx 30% ga arzonlashadi, haydovchi esa 2 baravar ko'p daromad qiladi.
-> 3. **Ekosistema:** Ilova ichida ham Mijoz, ham Haydovchi rejimlari birlashtirilgan.
-> 
-> Bu shunchaki taksi dasturi emas — bu O'zbekistonning **yagona AI Logistika va Mobility infratuzilmasi!**"
-
-Ushbu interfeys, g'oya va pitching orqali loyihangiz xakatondagi boshqa barcha "odatiy" saytlardan keskin ajralib turadi va hakamlar sizga **eng yuqori ballni** berishadi! Ularga ushbu tayyor kodni va interfeysni ko'rsatishingiz mumkin.
 
 
 
