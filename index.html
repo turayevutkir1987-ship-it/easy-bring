@@ -269,7 +269,6 @@
             gap: 12px;
         }
 
-        /* Yangilangan Balans Bloki */
         .driver-stats-card {
             background: #0f172a;
             color: white;
@@ -563,7 +562,6 @@
 
         <!-- DRIVER VIEW -->
         <div id="driverView" class="driver-panel">
-            <!-- Dynamic Balance Card -->
             <div class="driver-stats-card">
                 <div class="driver-header-info">
                     <div>
@@ -612,7 +610,8 @@
         "Farg'ona": ["Farg'ona shahri", "Marg'ilon sh.", "Qo'qon sh.", "Oltiariq", "Rishton"]
     };
 
-    let globalOrders = [
+    // Boshlang'ich namuna buyurtma (LocalStorage bo'sh bo'lsa)
+    const initialDefaultOrders = [
         {
             id: 101,
             type: 'cargo',
@@ -626,14 +625,15 @@
         }
     ];
 
+    // LocalStorage-dan xotiradagi e'lonlarni va ma'lumotlarni yuklash
+    let globalOrders = JSON.parse(localStorage.getItem('eb_global_orders')) || initialDefaultOrders;
+    let totalEarned = parseInt(localStorage.getItem('eb_total_earned')) || 0;
+    let driverData = JSON.parse(localStorage.getItem('eb_driver_data')) || {};
+    let isDriverRegistered = localStorage.getItem('eb_driver_registered') === 'true';
+
     let currentRole = 'client';
     let currentTab = 'taxi';
-    let isDriverRegistered = false;
-    let driverData = {};
-
-    // Balans Tizimi O'zgaruvchilari
-    let totalEarned = 0;
-    let seconds24h = 86400; // 24 soat (86400 sekund)
+    let seconds24h = 86400;
 
     document.addEventListener("DOMContentLoaded", function() {
         document.getElementById('fromRegion').addEventListener('change', function() { updateDistricts(this.value, 'fromDistrict'); });
@@ -648,9 +648,21 @@
         document.getElementById('btnConfirm').addEventListener('click', confirmOrder);
         document.getElementById('btnSaveDriver').addEventListener('click', saveDriverRegistration);
 
-        // 24 soatlik Taymerni Ishga Tushirish
+        if (isDriverRegistered) {
+            document.getElementById('driverInfoText').innerText = driverData.name.toUpperCase();
+            document.getElementById('driverCarText').innerText = `${driverData.car} (${driverData.number})`;
+        }
+
+        saveToLocalStorage();
         start24hTimer();
     });
+
+    function saveToLocalStorage() {
+        localStorage.setItem('eb_global_orders', JSON.stringify(globalOrders));
+        localStorage.setItem('eb_total_earned', totalEarned.toString());
+        localStorage.setItem('eb_driver_data', JSON.stringify(driverData));
+        localStorage.setItem('eb_driver_registered', isDriverRegistered.toString());
+    }
 
     function updateDistricts(regionName, districtSelectId) {
         const districtSelect = document.getElementById(districtSelectId);
@@ -703,6 +715,7 @@
         document.getElementById('driverInfoText').innerText = name.toUpperCase();
         document.getElementById('driverCarText').innerText = `${car} (${number})`;
 
+        saveToLocalStorage();
         document.getElementById('driverRegModal').style.display = 'none';
         switchToDriverView();
         alert("✅ Ro'yxatdan muvaffaqiyatli o'tdingiz!");
@@ -790,7 +803,8 @@
         };
 
         globalOrders.unshift(newOrder);
-        alert("✅ Buyurtmangiz yaratildi va haydovchilarga yuborildi!");
+        saveToLocalStorage();
+        alert("✅ Buyurtmangiz saqlandi va haydovchilarga yuborildi!");
         document.getElementById('aiResult').style.display = 'none';
     }
 
@@ -840,16 +854,15 @@
         if (order && order.status !== 'accepted') {
             order.status = 'accepted';
             
-            // Balansga narxni qo'shish
             totalEarned += order.priceNum;
             updateBalanceUI();
+            saveToLocalStorage();
 
             const btnContainer = document.getElementById(`btn-container-${orderId}`);
             btnContainer.innerHTML = `<button class="accept-btn accepted" disabled>✓ Qabul qilindi (<span id="timer-${orderId}">10s</span>)</button>`;
 
             alert(`🚕 Buyurtma qabul qilindi!\n\n💰 Tushum: ${order.price}\n📍 Manzil: ${order.from}\n📞 Telefon: ${order.phone}`);
 
-            // 10 soniyadan so'ng o'chib ketishi (test rejimi)
             let secondsLeft = 10; 
             const interval = setInterval(() => {
                 secondsLeft--;
@@ -859,36 +872,34 @@
                 if (secondsLeft <= 0) {
                     clearInterval(interval);
                     globalOrders = globalOrders.filter(o => o.id !== orderId);
+                    saveToLocalStorage();
                     renderDriverOrders();
                 }
             }, 1000);
         }
     }
 
-    // Balans va Ilova haqqini qayta hisoblash funksiyasi
     function updateBalanceUI() {
-        const appFee = Math.round(totalEarned * 0.10); // 10% Ilova haqqi
-        const netBalance = totalEarned - appFee; // Sof balans
+        const appFee = Math.round(totalEarned * 0.10);
+        const netBalance = totalEarned - appFee;
 
         document.getElementById('totalEarnedVal').innerText = totalEarned.toLocaleString() + " so'm";
         document.getElementById('appFeeVal').innerText = appFee.toLocaleString() + " so'm";
         document.getElementById('netBalanceVal').innerText = netBalance.toLocaleString() + " so'm";
     }
 
-    // 24 Soatlik Taymer (Har 24 soatda pulni 0 so'mga tushirish)
     function start24hTimer() {
         setInterval(() => {
             seconds24h--;
             
             if (seconds24h <= 0) {
-                // 24 soat tugaganda balans nolga tushadi
                 totalEarned = 0;
                 updateBalanceUI();
-                seconds24h = 86400; // Qayta 24 soatga sozlash
+                saveToLocalStorage();
+                seconds24h = 86400;
                 alert("⏰ 24 soat o'tdi! Kunlik balansingiz va ko'rsatkichlar 0 so'mga yangilandi.");
             }
 
-            // Taymerni ekranda soat:minut:sekund qilib ko'rsatish
             const hrs = Math.floor(seconds24h / 3600);
             const mins = Math.floor((seconds24h % 3600) / 60);
             const secs = seconds24h % 60;
